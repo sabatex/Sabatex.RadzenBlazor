@@ -1,0 +1,23 @@
+@typeparam T
+
+@code{
+    [Parameter] public EventCallback<T> OnEditRow { get; set; }
+    [Parameter] public EventCallback<T> OnCancelEdit { get; set; }
+    [Parameter] public EventCallback<T> OnSaveRow { get; set; }
+    [Parameter] public EventCallback<T> OnDeleteRow { get; set; }
+    [Parameter] public string Width { get; set; } = default!;
+}
+<RadzenDataGridColumn TItem="T" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false"
+    TextAlign="TextAlign.Center" Width="@Width">
+    <Template Context="client">
+        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(async args => await OnEditRow.InvokeAsync(client))"
+            @onclick:stopPropagation="true" />
+        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(async args => await OnDeleteRow.InvokeAsync(client))"
+            @onclick:stopPropagation="true" />
+    </Template>
+    <EditTemplate Context="client">
+        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@(async args => await OnSaveRow.InvokeAsync(client))" />
+        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1"
+                      Click="@(async args => await OnCancelEdit.InvokeAsync(client))" />
+    </EditTemplate>
+</RadzenDataGridColumn>
