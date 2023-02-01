@@ -3,9 +3,5 @@
   <PropertyGroup>
     <_LastSelectedProfileId>C:\Users\serhi\source\repos\sabatex\sabatex.RadzenBlazor.UIExt\sabatex.RadzenBlazor.UIExt\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
-  <ItemGroup>
-    <Content Update="wwwroot\sabatexRadzenBlazorUIExt.ts">
-      <SubType>Code</SubType>
-    </Content>
-  </ItemGroup>
+  <ItemGroup />
 </Project>

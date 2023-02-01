@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
-
   <PropertyGroup>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-	<Version>2.1.0</Version>
+	<Version>2.1.0-alpha7</Version>
+	<SabatexNugetKeyPath>C:\\Users\\serhi\\.scripts\\NUGET_AUTH_TOKEN</SabatexNugetKeyPath>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 

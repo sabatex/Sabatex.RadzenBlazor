@@ -17,7 +17,7 @@ public class sabatexJsInterop : IAsyncDisposable
     public sabatexJsInterop(IJSRuntime jsRuntime)
     {
         moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
-            "import", "./_content/sabatex.RadzenBlazor.UIExt/exampleJsInterop.js").AsTask());
+            "import", "./_content/sabatex.RadzenBlazor/sabatexRadzenBlazor.js").AsTask());
     }
 
     public async ValueTask<string> Prompt(string message)
@@ -25,16 +25,15 @@ public class sabatexJsInterop : IAsyncDisposable
         var module = await moduleTask.Value;
         return await module.InvokeAsync<string>("showPrompt", message);
     }
-
-    //public async ValueTask FocusElement(ElementReference elementReference)
-    //{
-    //    var module = await moduleTask.Value;
-    //   await module.InvokeAsync<string>("focusElement", elementReference);
-    //}
     public async ValueTask FocusElement(string elementReference)
     {
         var module = await moduleTask.Value;
         await module.InvokeAsync<string>("focusElement", elementReference);
+    }
+
+    public async ValueTask DownloadStringAsFile(string fileName,string text){
+        var module = await moduleTask.Value;
+        await module.InvokeAsync<object>("downloadStrigAsFile",fileName,text);
     }
 
     public async ValueTask DisposeAsync()

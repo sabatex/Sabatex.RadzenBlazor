@@ -11,3 +11,13 @@ export function focusElement() {
         elements[0].scrollIntoView({ block: "center" });
 
 }
+
+export function downloadStrigAsFile(fileName:string,content:string){
+    let link = document.createElement("a");
+    link.download = fileName;
+    let data = new Blob([content],{type:'text/plain'});
+    link.href = window.URL.createObjectURL(data);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
