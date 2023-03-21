@@ -7,6 +7,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
+	
   <ItemGroup>
     <Compile Remove="bin\**" />
     <Content Remove="bin\**" />
