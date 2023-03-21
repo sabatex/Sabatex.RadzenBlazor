@@ -15,7 +15,6 @@
     <TypeScriptCompile Remove="bin\**" />
   </ItemGroup>
 
-
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
