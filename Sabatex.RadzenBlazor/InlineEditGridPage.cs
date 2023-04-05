@@ -102,7 +102,8 @@ public abstract class InlineEditGridPage<TItem> : BaseDataPage where TItem :clas
     protected async Task gridRowCreate(TItem item)
     {
         var result = await DataAdapter.PostAsync(item);
-        await grid.Reload();
+        if (grid != null)
+            await grid.Reload();
         itemToInsert = null;
         await InvokeAsync(() => { StateHasChanged(); });
     }
@@ -127,6 +128,10 @@ public abstract class InlineEditGridPage<TItem> : BaseDataPage where TItem :clas
     {
         try
         {
+            if (DialogService == null)
+            {
+                throw new Exception("The DialogService=null sabatex.RadzenBlazor->InlineEditGridPage->GridDeleteButtonClick()");
+            }
             if (await DialogService.Confirm("Ви впевнені?", "Видалення запису", new ConfirmOptions() { OkButtonText = "Так", CancelButtonText = "Ні" }) == true)
             {
                 try
@@ -136,13 +141,13 @@ public abstract class InlineEditGridPage<TItem> : BaseDataPage where TItem :clas
                 }
                 catch(Exception e)
                 {
-                    NotificationService?.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = $"Error", Detail = $"Unable to delete TgClient" });
+                    NotificationService?.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = $"Error", Detail = $"Unable to delete TgClient with Error: {e.Message}" });
                 }
             }
         }
         catch (System.Exception e)
         {
-            NotificationService.Notify(new NotificationMessage()
+            NotificationService?.Notify(new NotificationMessage()
             {
                 Severity = NotificationSeverity.Error,
                 Summary = $"Помилка",

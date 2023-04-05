@@ -25,7 +25,7 @@ public class RadzenOdataAdapter : IRadzenDataAdapter
     {
         this.httpClient = httpClient;
         this.navigationManager = navigationManager;
-        baseUri = new Uri(httpClient.BaseAddress,"odata/");
+        baseUri = new Uri(this.httpClient.BaseAddress ?? new Uri("/"),"odata/");
         this.notificationService = notificationService;
         this.logger= logger;
     }

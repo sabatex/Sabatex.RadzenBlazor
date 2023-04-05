@@ -23,7 +23,14 @@ public class BaseDataPage:ComponentBase
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        baseUri = new Uri($"{navigationManager.BaseUri}odata/");
+        if (navigationManager != null)
+        {
+            baseUri = new Uri($"{navigationManager.BaseUri}odata/");
+        }
+        else
+        {
+            throw new Exception("Sabatex.RadzenBlazor->BaseDataPage->OnInitialized() navigationManager is NULL");
+        }
     }
    
 }
