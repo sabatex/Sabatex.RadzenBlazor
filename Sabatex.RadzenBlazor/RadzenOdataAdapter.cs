@@ -34,6 +34,9 @@ public class RadzenOdataAdapter : IRadzenDataAdapter
         try
         {
             var uri = new Uri(baseUri, $"{typeof(TItem).Name}/$query");
+
+
+
             var query = new StringBuilder();
             bool last = false;
             if (top.HasValue)
@@ -155,27 +158,37 @@ public class RadzenOdataAdapter : IRadzenDataAdapter
     {
         try
         {
+
             if (dataCollection == null)
                 throw new ArgumentNullException(nameof(dataCollection));
-            string? filter = null;
-            if (filterFields != null && args.Filter !=null)
+            string filter = string.Empty;
+            if (filterFields != null)
+            {
+                // search in combobox
+            }
+            else
+                filter = args.Filter;
+            
+            if (filterFields != null && !string.IsNullOrWhiteSpace(args.Filter))
             {
                 ODataSearchFilterBuilder filterBuilder = new ODataSearchFilterBuilder();
-                foreach (var field in filterFields.OrderBy(o=>o.priority))
+                foreach (var field in filterFields.OrderBy(o => o.priority))
                 {
                     filterBuilder.AddField(field, args.Filter);
                 }
-                filter= filterBuilder.ToString();
+                filter = filterBuilder.ToString();
             }
+
+
             if (foreginKey!= null)
             {
-                if (filter!=null)
+                if (string.IsNullOrWhiteSpace(filter))
                 {
-                    filter = $"{filter} and {foreginKey.Name} eq {foreginKey.Id}";
+                    filter = $"{foreginKey.Name} eq {foreginKey.Id}";
                 }
                 else
                 {
-                    filter = $"{foreginKey.Name} eq {foreginKey.Id}";
+                    filter = $"{filter} and {foreginKey.Name} eq {foreginKey.Id}";
                 }
             }
 
@@ -235,7 +248,7 @@ internal struct ODataSearchFilterBuilder
     void AddStringSearch(string FieldName,string value)
     {
         AddOperation();
-        sb.Append($"contains({FieldName},'{value}')");
+        sb.Append($"contains(tolower({FieldName}),'{value}')");
     }
     void AddIntSearch(string FieldName, string value)
     {

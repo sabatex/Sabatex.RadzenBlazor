@@ -29,6 +29,7 @@ public abstract class InlineEditGridPage<TItem> : BaseDataPage where TItem :clas
     
     protected virtual string? expandGrid => null;
     protected virtual string? filterGrid => null;
+    protected virtual IEnumerable<FieldDescriptor>? filterFields=>null;
 
     protected RadzenODataCollection<TItem> dataCollection=new RadzenODataCollection<TItem>();
 
