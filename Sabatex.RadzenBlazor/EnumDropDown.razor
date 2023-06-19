@@ -1,0 +1,58 @@
+﻿@typeparam TItem 
+@using System.Reflection;
+@using System.ComponentModel.DataAnnotations;
+//@using sabatex.Extensions.ClassExtensions
+
+<RadzenDropDown @bind-Value="Value"
+                Data="@collection"
+                ValueProperty="Value"
+                TextProperty="presentation"
+                Placeholder="@Placeholder"
+                Style="width:100%"
+                Change="async (value) => await ValueChanged.InvokeAsync((TItem)value)">
+</RadzenDropDown>
+    
+@code
+{
+    [Parameter] public EventCallback<TItem> ValueChanged { get; set; }
+    [Parameter] public TItem Value { get; set; }
+    [Parameter] public string NullValuePrethentation { get; set; } = "<...>";
+    [Parameter] public string Placeholder { get; set; }
+    IEnumerable<PR> collection;
+    //Виберіть програму
+    internal class PR
+    {
+        public TItem Value { get; set; }
+        public string Presentation { get; set; }
+    }
+
+    public static string GetDisplayDescription(object enumValue)
+    {
+        if (enumValue == null) return string.Empty;
+        string text = ((Enum)enumValue).ToString();
+        var member = enumValue.GetType().GetMember(text);
+        var display = member.FirstOrDefault()?.GetCustomAttribute<DisplayAttribute>();
+        return display?.GetDescription() ?? text;
+    }
+
+
+    protected override void OnInitialized()
+    {
+
+        base.OnInitialized();
+        var nulableEnumType = Nullable.GetUnderlyingType(typeof(TItem));
+
+        if (nulableEnumType != null)
+        { 
+            var pr =  Radzen.Blazor.EnumExtensions.EnumAsKeyValuePair(typeof(TItem));
+            pr.Add(new PR { Presentation = NullValuePrethentation });
+            collection = pr;
+        }
+        else
+        {
+            collection = Enum.GetValues(typeof(TItem)).Cast<TItem>().Select(s => new PR { Value = s, Presentation = GetDisplayDescription(s) });
+        }
+    }
+}
+ 
+
