@@ -1,12 +1,12 @@
 ﻿@typeparam TItem 
 @using System.Reflection;
 @using System.ComponentModel.DataAnnotations;
-//@using sabatex.Extensions.ClassExtensions
+
 
 <RadzenDropDown @bind-Value="Value"
                 Data="@collection"
                 ValueProperty="Value"
-                TextProperty="presentation"
+                TextProperty="text"
                 Placeholder="@Placeholder"
                 Style="width:100%"
                 Change="async (value) => await ValueChanged.InvokeAsync((TItem)value)">
@@ -16,23 +16,28 @@
 {
     [Parameter] public EventCallback<TItem> ValueChanged { get; set; }
     [Parameter] public TItem Value { get; set; }
-    [Parameter] public string NullValuePrethentation { get; set; } = "<...>";
     [Parameter] public string Placeholder { get; set; }
-    IEnumerable<PR> collection;
-    //Виберіть програму
-    internal class PR
-    {
-        public TItem Value { get; set; }
-        public string Presentation { get; set; }
-    }
+    bool allowClear = false;
+    IEnumerable<object>? collection;
 
-    public static string GetDisplayDescription(object enumValue)
+
+    private IEnumerable<object> EnumAsKeyValuePair(Type enumType)
     {
-        if (enumValue == null) return string.Empty;
-        string text = ((Enum)enumValue).ToString();
-        var member = enumValue.GetType().GetMember(text);
-        var display = member.FirstOrDefault()?.GetCustomAttribute<DisplayAttribute>();
-        return display?.GetDescription() ?? text;
+
+        var result = from val in Enum.GetValues(enumType).Cast<Enum>().Distinct()
+                     select new
+                     {
+                         Value = (TItem)(object)val,
+                         Text = ((Enum)(object)val).GetDisplayDescription()
+                     };
+        if (Nullable.GetUnderlyingType(enumType) != null)
+        {
+            var r = result.ToList();
+            r.Add(new { Value = (TItem)(object)null, Text = string.Empty });
+            return r;
+        }
+        return result;
+
     }
 
 
@@ -40,18 +45,20 @@
     {
 
         base.OnInitialized();
-        var nulableEnumType = Nullable.GetUnderlyingType(typeof(TItem));
+        var nullableEnum = Nullable.GetUnderlyingType(typeof(TItem));
+        var enums = Enum.GetValues(nullableEnum ==null?typeof(TItem):nullableEnum)
+                        .Cast<TItem>()
+                        .Select(s => new { Value = s, Text = ((Enum)(object)s).GetDisplayDescription() });
+        if (nullableEnum != null)
+        {
+            var r = enums.ToList();
+            r.Add(new { Value = (TItem)(object)null, Text = "<null>" });
+            collection = r;
 
-        if (nulableEnumType != null)
-        { 
-            var pr =  Radzen.Blazor.EnumExtensions.EnumAsKeyValuePair(typeof(TItem));
-            pr.Add(new PR { Presentation = NullValuePrethentation });
-            collection = pr;
         }
         else
-        {
-            collection = Enum.GetValues(typeof(TItem)).Cast<TItem>().Select(s => new PR { Value = s, Presentation = GetDisplayDescription(s) });
-        }
+            collection = enums;
+ 
     }
 }
  
