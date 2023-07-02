@@ -15,8 +15,9 @@
 @code
 {
     [Parameter] public EventCallback<TItem> ValueChanged { get; set; }
-    [Parameter] public TItem Value { get; set; }
-    [Parameter] public string Placeholder { get; set; }
+    [Parameter] public TItem Value { get; set; } = default!;
+    [Parameter] public string Placeholder { get; set; } = default!;
+
     bool allowClear = false;
     IEnumerable<object>? collection;
 
