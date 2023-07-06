@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.9.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
