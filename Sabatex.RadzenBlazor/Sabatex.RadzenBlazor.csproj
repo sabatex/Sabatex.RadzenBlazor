@@ -35,11 +35,11 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.9.5">
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.1.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Radzen.Blazor" Version="4.13.2" />
+    <PackageReference Include="Radzen.Blazor" Version="4.14.4" />
     <PackageReference Include="Sabatex.Core" Version="1.1.1" />
   </ItemGroup>
 
@@ -47,7 +47,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.14" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-	<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.3" />
+	<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.9" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="EnumDropDown.razor">
