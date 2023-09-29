@@ -42,7 +42,7 @@ public abstract class InlineEditGridPage<TItem> : BaseDataPage where TItem :clas
 
     private void GridRefNull()
     {
-            NotificationService?.Notify(new NotificationMessage
+            notificationService?.Notify(new NotificationMessage
             {
                 Severity = NotificationSeverity.Error,
                 Summary = "Error",
@@ -67,7 +67,7 @@ public abstract class InlineEditGridPage<TItem> : BaseDataPage where TItem :clas
     {
         if (grid == null)
         {
-            NotificationService?.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = $"Error", Detail = $"НЕ призначено звязок для grid" });
+            notificationService?.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = $"Error", Detail = $"НЕ призначено звязок для grid" });
         }
         else 
         {
@@ -90,7 +90,7 @@ public abstract class InlineEditGridPage<TItem> : BaseDataPage where TItem :clas
         catch (Exception e)
         {
             string error = $"Помилка отримання даних {typeof(TItem).Name}  {e.Message}";
-            NotificationService?.Notify(new NotificationMessage
+            notificationService?.Notify(new NotificationMessage
             {
                 Severity = NotificationSeverity.Error,
                 Summary = "Помилка",
@@ -142,13 +142,13 @@ public abstract class InlineEditGridPage<TItem> : BaseDataPage where TItem :clas
                 }
                 catch(Exception e)
                 {
-                    NotificationService?.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = $"Error", Detail = $"Unable to delete TgClient with Error: {e.Message}" });
+                    notificationService?.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = $"Error", Detail = $"Unable to delete TgClient with Error: {e.Message}" });
                 }
             }
         }
         catch (System.Exception e)
         {
-            NotificationService?.Notify(new NotificationMessage()
+            notificationService?.Notify(new NotificationMessage()
             {
                 Severity = NotificationSeverity.Error,
                 Summary = $"Помилка",

@@ -15,7 +15,7 @@ public class BaseDataPage:ComponentBase
     [Inject]
     protected NavigationManager? navigationManager { get; set; }
     [Inject]
-    protected NotificationService? NotificationService { get; set; }
+    protected NotificationService? notificationService { get; set; }
 
     [Inject]
     protected Blazored.LocalStorage.ISyncLocalStorageService? LocalStorageService { get; set; }
@@ -40,6 +40,7 @@ public class BaseDataPage:ComponentBase
     {
         base.OnInitialized();
         columnsPerPage = LocalStorageService?.GetItem<int>(PageName + nameof(ColumnsPerPage)) ?? 10;
+        if (columnsPerPage == 0) { columnsPerPage = 10; }
         if (navigationManager != null)
         {
             baseUri = new Uri($"{navigationManager.BaseUri}odata/");
