@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Sabatex.RadzenBlazor;
 
-public interface IRadzenDataAdapter
+public interface ISabatexRadzenBlazorDataAdapter
 {
     Task<(IEnumerable<TItem> items, int count)> GetAsync<TItem>(string? filter, string? orderby, string? expand, int? top, int? skip, bool? count, string? format=null, string? select=null) where TItem : class;
     Task<TItem> GetByIdAsync<TItem,TKey>(TKey id, string? expand=null) where TItem:class;

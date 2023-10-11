@@ -21,8 +21,8 @@ public abstract class InlineEditGridPage<TItem> : BaseDataPage where TItem :clas
    
     [Inject] protected DialogService? DialogService { get; set; }
 
-    [Inject] protected IRadzenDataAdapter? dataAdapter { get; set; }
-    protected IRadzenDataAdapter DataAdapter =>dataAdapter!=null?dataAdapter:throw new Exception("Data Adapter is not initialized");
+    [Inject] protected ISabatexRadzenBlazorDataAdapter? dataAdapter { get; set; }
+    protected ISabatexRadzenBlazorDataAdapter DataAdapter =>dataAdapter!=null?dataAdapter:throw new Exception("Data Adapter is not initialized");
 
     protected bool isGridDataLoading = false;
     protected RadzenDataGrid<TItem>? grid;

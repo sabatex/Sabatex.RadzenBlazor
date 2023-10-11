@@ -13,8 +13,8 @@ namespace Sabatex.RadzenBlazor;
 
 public class BaseGridPage<TItem>:BaseDataPage where TItem : class,IEntityBase,new()
 {
-    [Inject] IRadzenDataAdapter? _dataAdapter { get; set; }
-    protected IRadzenDataAdapter DataAdapter => _dataAdapter != null ? _dataAdapter : throw new Exception("Data Adapter is not initialized");
+    [Inject] ISabatexRadzenBlazorDataAdapter? _dataAdapter { get; set; }
+    protected ISabatexRadzenBlazorDataAdapter DataAdapter => _dataAdapter != null ? _dataAdapter : throw new Exception("Data Adapter is not initialized");
 
     protected bool IsGridDataLoading = false;
     protected bool IsGridRO = false;

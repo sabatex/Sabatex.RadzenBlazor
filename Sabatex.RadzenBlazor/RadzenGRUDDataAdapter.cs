@@ -12,7 +12,7 @@ using System.Net.Http.Json;
 
 namespace Sabatex.RadzenBlazor;
 
-public class RadzenGRUDDataAdapter<TKey> : IRadzenDataAdapter
+public class RadzenGRUDDataAdapter<TKey> : ISabatexRadzenBlazorDataAdapter
 {
     private readonly NotificationService _notificationService;
     private readonly HttpClient _httpClient;

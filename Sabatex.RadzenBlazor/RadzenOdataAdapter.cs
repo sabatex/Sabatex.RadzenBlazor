@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Sabatex.RadzenBlazor;
 
-public class RadzenOdataAdapter : IRadzenDataAdapter
+public class RadzenOdataAdapter : ISabatexRadzenBlazorDataAdapter
 {
     private readonly HttpClient httpClient;
     private readonly Uri baseUri;
