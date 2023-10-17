@@ -23,9 +23,9 @@ namespace Sabatex.RadzenBlazor
             return services;
         }
 
-        public static IServiceCollection AddSabatexRadzenBlazor<TDataAdapter>(this IServiceCollection services) where TDataAdapter : class, ISabatexRadzenBlazorDataAdapter
+        public static IServiceCollection AddSabatexRadzenBlazor<TDataAdapter,TKey>(this IServiceCollection services) where TDataAdapter : class, ISabatexRadzenBlazorDataAdapter<TKey>
         {
-            services.AddSabatexRadzenBlazor().AddScoped<ISabatexRadzenBlazorDataAdapter, TDataAdapter>();
+            services.AddSabatexRadzenBlazor().AddScoped<ISabatexRadzenBlazorDataAdapter<TKey>, TDataAdapter>();
             return services;
         }
     
