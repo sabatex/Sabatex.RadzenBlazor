@@ -21,9 +21,11 @@ public class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadzenBlazorB
     protected bool IsGridRO = false;
     protected RadzenDataGrid<TItem> grid = default!;
     protected ODataServiceResult<TItem> dataCollection = new ODataServiceResult<TItem>();
+    protected IList<TItem>? SelectedItems;
     protected virtual string? ExpandGrid => null;
     protected virtual ForeginKey? ForeginKey => null;
 
+    private int columnsPerPage;
     protected virtual string EditPageUri 
     {
         get
@@ -32,7 +34,7 @@ public class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadzenBlazorB
             var index = url.LastIndexOf("/");
             string baseRoute = string.Empty;
             if (index != -1)
-                baseRoute = url.Substring(0, index);
+                baseRoute = url.Substring(0, index+1);
             return $"{baseRoute}{typeof(TItem).Name}Edit";
         }
     }
@@ -58,12 +60,16 @@ public class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadzenBlazorB
         NavigateToEditPage(null);
         await Task.Yield();
     }
+    protected virtual async Task RowDoubleClick(DataGridRowMouseEventArgs<TItem> args)
+    {
+        NavigateToEditPage(args.Data.Id.ToString());
+        await Task.Yield();
+    }
     protected virtual async Task EditButtonClick(TItem data)
     {
         NavigateToEditPage(data.Id.ToString());
         await Task.Yield();
     }
-
     protected virtual async Task DeleteButtonClick(TItem data)
     {
         try
@@ -159,7 +165,7 @@ public class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadzenBlazorB
         IsGridDataLoading = false;
     }
 
-    private int columnsPerPage;
+    
     protected int ColumnsPerPage
     {
         get => columnsPerPage;
