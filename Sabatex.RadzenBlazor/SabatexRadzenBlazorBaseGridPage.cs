@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Sabatex.RadzenBlazor;
 
-public class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadzenBlazorBaseDataPage<TKey> where TItem : EntityBase<TKey> 
+public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadzenBlazorBaseDataPage<TKey> where TItem : EntityBase<TKey> 
 {
     [Inject] protected DialogService DialogService { get; set; } = default!;
 

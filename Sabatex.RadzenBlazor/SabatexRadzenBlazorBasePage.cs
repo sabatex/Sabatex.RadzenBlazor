@@ -18,7 +18,15 @@ namespace Sabatex.RadzenBlazor
         protected NotificationService NotificationService { get; set; } = default!;
         [Inject]
         protected Blazored.LocalStorage.ISyncLocalStorageService LocalStorageService { get; set; } = default!;
+        [Inject]
+        protected SabatexBlazorAppState AppState {get;set;}=default!;
 
-        protected string PageName { get; set; } = "Default";
+        protected abstract string PageName { get;}
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+            AppState.PageHeader = PageName;
+        }
     }
 }
