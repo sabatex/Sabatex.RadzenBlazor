@@ -21,6 +21,7 @@
     bool allowClear = false;
     IEnumerable<object>? collection;
 
+    private TItem? NullValue=>(TItem)(object)null;
 
     private IEnumerable<object> EnumAsKeyValuePair(Type enumType)
     {
@@ -34,7 +35,7 @@
         if (Nullable.GetUnderlyingType(enumType) != null)
         {
             var r = result.ToList();
-            r.Add(new { Value = (TItem)(object)null, Text = string.Empty });
+            r.Add(new { Value = NullValue, Text = string.Empty });
             return r;
         }
         return result;
@@ -53,7 +54,7 @@
         if (nullableEnum != null)
         {
             var r = enums.ToList();
-            r.Add(new { Value = (TItem)(object)null, Text = "<null>" });
+            r.Add(new { Value = NullValue, Text = "<null>" });
             collection = r;
 
         }

@@ -62,12 +62,17 @@ public class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadzenBlazorB
     }
     protected virtual async Task RowDoubleClick(DataGridRowMouseEventArgs<TItem> args)
     {
-        NavigateToEditPage(args.Data.Id.ToString());
+        if (args.Data is not null)
+            NavigateToEditPage(args.Data.Id.ToString());
+        else
+            throw new NullReferenceException("The args.Data is null");
+ 
         await Task.Yield();
     }
     protected virtual async Task EditButtonClick(TItem data)
     {
-        NavigateToEditPage(data.Id.ToString());
+        if (data is not null)
+            NavigateToEditPage(data.Id.ToString());
         await Task.Yield();
     }
     protected virtual async Task DeleteButtonClick(TItem data)

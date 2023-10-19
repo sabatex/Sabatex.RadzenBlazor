@@ -26,7 +26,7 @@ public abstract class SabatexInlineEditGridPage<TItem,TKey> : SabatexRadzenBlazo
     protected virtual string? filterGrid => null;
     protected virtual IEnumerable<FieldDescriptor>? filterFields=>null;
 
-    protected ODataServiceResult<TItem> dataCollection=new ODataServiceResult<TItem>();
+    //protected ODataServiceResult<TItem> dataCollection=new ODataServiceResult<TItem>();
 
     TItem? itemToInsert;
     TItem? itemToUpdate;

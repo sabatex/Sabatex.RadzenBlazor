@@ -20,6 +20,7 @@ namespace Sabatex.RadzenBlazor
             services.AddScoped<ContextMenuService>();
             services.AddScoped<sabatexJsInterop>();
             services.AddBlazoredLocalStorage();
+            services.AddSingleton<SabatexBlazorAppState>();
             return services;
         }
 

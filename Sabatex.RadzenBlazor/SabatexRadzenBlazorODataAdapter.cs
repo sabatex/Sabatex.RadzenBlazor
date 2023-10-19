@@ -126,7 +126,10 @@ public class SabatexRadzenBlazorODataAdapter<TKey> : ISabatexRadzenBlazorDataAda
 
     public async Task<TItem> GetByIdAsync<TItem>(TKey id, string? expand = null) where TItem : class
     {
-        return await GetByIdAsync<TItem>(id.ToString(),expand);
+        if (id is not null)
+            return await GetByIdAsync<TItem>(id.ToString(),expand);
+        else
+            throw new ArgumentNullException(nameof(id));
     }
 
     public async Task<TItem> GetByIdAsync<TItem>(string id, string? expand = null) where TItem : class
