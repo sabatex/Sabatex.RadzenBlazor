@@ -35,7 +35,7 @@ public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadz
             string baseRoute = string.Empty;
             if (index != -1)
                 baseRoute = url.Substring(0, index+1);
-            return $"{baseRoute}{typeof(TItem).Name}Edit";
+            return $"{baseRoute}{typeof(TItem).Name}-edit";
         }
     }
 

@@ -1,3 +1,6 @@
 {
-  "nugetAuthTokenPath": "C:\\Users\\serhi\\.scripts\\NUGET_AUTH_TOKEN"
+  "NUGET":{
+  "nugetAuthTokenPath": "C:\\Users\\serhi\\.scripts\\NUGET_AUTH_TOKEN",
+  "LocalDebugStorage":"C:\\Users\\serhi\\source\\DebugPackages"
+}
 }

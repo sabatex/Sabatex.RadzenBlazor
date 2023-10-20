@@ -8,16 +8,8 @@ using System.Threading.Tasks;
 
 namespace Sabatex.RadzenBlazor
 {
-    public abstract class SabatexRadzenBlazorBasePage : ComponentBase
+    public abstract class SabatexRadzenBlazorBasePage : SabatexRadzenBlazorBaseComponent
     {
-        [Inject]
-        protected HttpClient HttpClient { get; set; } = default!;
-        [Inject]
-        protected NavigationManager NavigationManager { get; set; } = default!;
-        [Inject]
-        protected NotificationService NotificationService { get; set; } = default!;
-        [Inject]
-        protected Blazored.LocalStorage.ISyncLocalStorageService LocalStorageService { get; set; } = default!;
         [Inject]
         protected SabatexBlazorAppState AppState {get;set;}=default!;
 
