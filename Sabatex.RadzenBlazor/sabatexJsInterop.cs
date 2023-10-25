@@ -40,7 +40,14 @@ public class SabatexJsInterop : IAsyncDisposable
         var module = await moduleTask.Value;
         return await module.InvokeAsync<double>("getElementClientHeight",element);  
     }
-
+   public async ValueTask<double> GetElementOffSetHeight(ElementReference element) {
+        var module = await moduleTask.Value;
+        return await module.InvokeAsync<double>("getElementOffSetHeight",element);  
+    }
+  public async ValueTask<double> GetAvailHeight(ElementReference element) {
+        var module = await moduleTask.Value;
+        return await module.InvokeAsync<double>("getAvailHeight",element);  
+    }
     public async ValueTask DisposeAsync()
     {
         if (moduleTask.IsValueCreated)

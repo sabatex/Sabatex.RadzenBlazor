@@ -25,3 +25,10 @@ export function downloadStrigAsFile(fileName:string,content:string){
 export function getElementClientHeight(element:Element):number{
     return element.clientHeight;    
 }
+export function getElementOffSetHeight(element:HTMLBaseElement):number{
+    return element.offsetHeight;    
+}
+
+export function getAvailHeight(element:HTMLBaseElement):number{
+    return  window.screen.availHeight - element.offsetHeight - element.style.marginTop.length- element.style.marginBottom.length;    
+}

@@ -20,4 +20,10 @@ export function downloadStrigAsFile(fileName, content) {
 export function getElementClientHeight(element) {
     return element.clientHeight;
 }
+export function getElementOffSetHeight(element) {
+    return element.offsetHeight;
+}
+export function getAvailHeight(element) {
+    return window.screen.availHeight - element.offsetHeight - element.style.marginTop.length - element.style.marginBottom.length;
+}
 //# sourceMappingURL=sabatexRadzenBlazor.js.map

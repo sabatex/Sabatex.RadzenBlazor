@@ -4,21 +4,24 @@ using Microsoft.AspNetCore.Components;
 namespace Sabatex.RadzenBlazor;
 public class SabatexBlazorAppState
 {
-       string pageHeader=string.Empty;
-       public string PageHeader { get=>pageHeader; set { pageHeader = value; OnHeaderChange?.Invoke(value); } }
+       string pageHeader = string.Empty;
+       public string PageHeader { get => pageHeader; set { pageHeader = value; OnHeaderChange?.Invoke(value); } }
        public event Action<string>? OnHeaderChange;
-    
-       public Func<Task<double>> GetPageHeight;
-       
-       async Task<double> GetDoubleAsync()
-       {
-              await Task.Yield();
-              return 100;
 
-       }
-       public SabatexBlazorAppState()
+       double contentAvaliableHeight;
+       public event Action<double>? OnContentAvaliableHeightChange;
+       public double ContentAvaliableHeight
        {
-              GetPageHeight = GetDoubleAsync;
+              get => contentAvaliableHeight;
+              set
+              {
+                     if (contentAvaliableHeight != value)
+                     {
+                            contentAvaliableHeight = value;
+                            OnContentAvaliableHeightChange?.Invoke(value);
+                     }
+              }
        }
+
 
 }
