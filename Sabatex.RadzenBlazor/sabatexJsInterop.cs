@@ -10,11 +10,11 @@ namespace Sabatex.RadzenBlazor;
 // This class can be registered as scoped DI service and then injected into Blazor
 // components for use.
 
-public class sabatexJsInterop : IAsyncDisposable
+public class SabatexJsInterop : IAsyncDisposable
 {
     private readonly Lazy<Task<IJSObjectReference>> moduleTask;
 
-    public sabatexJsInterop(IJSRuntime jsRuntime)
+    public SabatexJsInterop(IJSRuntime jsRuntime)
     {
         moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
             "import", "./_content/Sabatex.RadzenBlazor/sabatexRadzenBlazor.js").AsTask());
@@ -34,6 +34,11 @@ public class sabatexJsInterop : IAsyncDisposable
     public async ValueTask DownloadStringAsFile(string fileName,string text){
         var module = await moduleTask.Value;
         await module.InvokeAsync<object>("downloadStrigAsFile",fileName,text);
+    }
+
+    public async ValueTask<double> GetElementClientHeight(ElementReference element) {
+        var module = await moduleTask.Value;
+        return await module.InvokeAsync<double>("getElementClientHeight",element);  
     }
 
     public async ValueTask DisposeAsync()

@@ -18,7 +18,7 @@ namespace Sabatex.RadzenBlazor
             services.AddScoped<NotificationService>();
             services.AddScoped<TooltipService>();
             services.AddScoped<ContextMenuService>();
-            services.AddScoped<sabatexJsInterop>();
+            services.AddScoped<SabatexJsInterop>();
             services.AddBlazoredLocalStorage();
             services.AddSingleton<SabatexBlazorAppState>();
             return services;

@@ -17,4 +17,7 @@ export function downloadStrigAsFile(fileName, content) {
     link.click();
     document.body.removeChild(link);
 }
+export function getElementClientHeight(element) {
+    return element.clientHeight;
+}
 //# sourceMappingURL=sabatexRadzenBlazor.js.map

@@ -13,12 +13,7 @@ namespace Sabatex.RadzenBlazor
         [Inject]
         protected SabatexBlazorAppState AppState {get;set;}=default!;
 
-        protected abstract string PageName { get;}
+        protected string PageName { get => AppState.PageHeader; set => AppState.PageHeader = value; }
 
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-            AppState.PageHeader = PageName;
-        }
     }
 }

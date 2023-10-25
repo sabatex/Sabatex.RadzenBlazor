@@ -26,12 +26,8 @@ namespace Sabatex.RadzenBlazor
                 NavigationManager.NavigateTo("/");
             else
             {
-                var uri = NavigationManager.GetUriWithQueryParameters(ReturnUrl,
-                new Dictionary<string, object?>
-                {
-                    ["RowId"] = Item.Id
-                });
-                NavigationManager.NavigateTo(uri);
+                //var uri = NavigationManager.GetUriWithQueryParameters(ReturnUrl,{});
+                NavigationManager.NavigateTo(ReturnUrl);
             }
 
         }
@@ -39,7 +35,7 @@ namespace Sabatex.RadzenBlazor
         {
             ReturnToList();
         }
-        protected async Task Save()
+        protected virtual async Task Save()
         {
             if (Id == null)
                 Item = await DataAdapter.PostAsync<TItem>(Item);

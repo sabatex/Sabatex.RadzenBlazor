@@ -18,6 +18,9 @@ namespace Sabatex.RadzenBlazor
         protected NotificationService NotificationService { get; set; } = default!;
         [Inject]
         protected Blazored.LocalStorage.ISyncLocalStorageService LocalStorageService { get; set; } = default!;
- 
+
+        [Inject]
+        protected SabatexJsInterop SabatexJS {get;set;}=default!;
+
      }
 }

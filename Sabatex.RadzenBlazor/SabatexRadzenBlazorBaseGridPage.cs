@@ -12,13 +12,18 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Sabatex.RadzenBlazor;
-
-public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadzenBlazorBaseDataPage<TKey> where TItem : EntityBase<TKey> 
+/// <summary>
+/// Base page with support grid
+/// </summary>
+/// <typeparam name="TItem"></typeparam>
+/// <typeparam name="TKey"></typeparam>
+public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadzenBlazorBaseDataPage<TKey>,ISabatexRadzenGridPage  where TItem : EntityBase<TKey>
 {
-    [Inject] protected DialogService DialogService { get; set; } = default!;
+    [Inject] 
+    protected DialogService DialogService { get; set; } = default!;
 
     protected bool IsGridDataLoading = false;
-    protected bool IsGridRO = false;
+    public bool IsGridRO {get;set;} = false;
     protected RadzenDataGrid<TItem> grid = default!;
     protected ODataServiceResult<TItem> dataCollection = new ODataServiceResult<TItem>();
     protected IList<TItem>? SelectedItems;
@@ -55,7 +60,7 @@ public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadz
  
         NavigationManager.NavigateTo(uri);
     }
-    protected virtual async Task AddButtonClick(MouseEventArgs args)
+    public virtual async Task AddButtonClick(MouseEventArgs args)
     {
         NavigateToEditPage(null);
         await Task.Yield();
@@ -197,4 +202,6 @@ public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadz
         }
 
     }
+
+  
 }

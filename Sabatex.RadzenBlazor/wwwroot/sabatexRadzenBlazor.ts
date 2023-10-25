@@ -21,3 +21,7 @@ export function downloadStrigAsFile(fileName:string,content:string){
     link.click();
     document.body.removeChild(link);
 }
+
+export function getElementClientHeight(element:Element):number{
+    return element.clientHeight;    
+}

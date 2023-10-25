@@ -66,7 +66,7 @@ public abstract class SabatexInlineEditGridPage<TItem,TKey> : SabatexRadzenBlazo
     }
 
 
-    protected override async Task AddButtonClick(MouseEventArgs args)
+    public override async Task AddButtonClick(MouseEventArgs args)
     {
             itemToInsert = new TItem();
             OnCreatedRow(itemToInsert);
