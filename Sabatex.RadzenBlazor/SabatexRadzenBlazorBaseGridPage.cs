@@ -40,9 +40,12 @@ public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadz
             string baseRoute = string.Empty;
             if (index != -1)
                 baseRoute = url.Substring(0, index+1);
-            return $"{baseRoute}{typeof(TItem).Name}-edit";
+            //return $"{baseRoute}{typeof(TItem).Name}-edit";
+            return $"{baseRoute}{EditPageName}";
         }
     }
+
+    public virtual string EditPageName{get;set;}="edit"; 
 
     private void NavigateToEditPage(string? id)
     {

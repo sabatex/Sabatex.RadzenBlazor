@@ -4,7 +4,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
 	<LangVersion>10</LangVersion>
-	<Version>3.0.0-alpha23</Version>
+	<Version>3.0.0-alpha25</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
@@ -41,7 +41,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Radzen.Blazor" Version="4.17.1" />
+    <PackageReference Include="Radzen.Blazor" Version="4.2.0" />
     <PackageReference Include="Sabatex.Core" Version="2.0.2" />
   </ItemGroup>
 
