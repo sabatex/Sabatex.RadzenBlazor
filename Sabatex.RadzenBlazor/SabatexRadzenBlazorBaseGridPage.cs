@@ -71,7 +71,7 @@ public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadz
     protected virtual async Task RowDoubleClick(DataGridRowMouseEventArgs<TItem> args)
     {
         if (args.Data is not null)
-            NavigateToEditPage(args.Data.Id.ToString());
+            NavigateToEditPage(args.Data?.Id?.ToString());
         else
             throw new NullReferenceException("The args.Data is null");
  
@@ -80,7 +80,7 @@ public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadz
     protected virtual async Task EditButtonClick(TItem data)
     {
         if (data is not null)
-            NavigateToEditPage(data.Id.ToString());
+            NavigateToEditPage(data.Id?.ToString());
         await Task.Yield();
     }
     protected virtual async Task DeleteButtonClick(TItem data)

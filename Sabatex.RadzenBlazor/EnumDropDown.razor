@@ -1,4 +1,4 @@
-﻿@typeparam TItem 
+﻿@typeparam TItem where TItem:Enum?
 @using System.Reflection;
 @using System.ComponentModel.DataAnnotations;
 
@@ -21,7 +21,7 @@
     bool allowClear = false;
     IEnumerable<object>? collection;
 
-    private TItem? NullValue=>(TItem)(object)null;
+    private TItem? NullValue = default!;
 
     private IEnumerable<object> EnumAsKeyValuePair(Type enumType)
     {
@@ -48,15 +48,12 @@
 
         base.OnInitialized();
         var nullableEnum = Nullable.GetUnderlyingType(typeof(TItem));
-        var enums = Enum.GetValues(nullableEnum ==null?typeof(TItem):nullableEnum)
+        var enums = Enum.GetValues(nullableEnum == null ? typeof(TItem) : nullableEnum)
                         .Cast<TItem>()
-                        .Select(s => new { Value = s, Text = ((Enum)(object)s).GetDisplayDescription() });
+                        .Select(s => new { Value = s, Text = s.GetDisplayDescription() });
         if (nullableEnum != null)
         {
-            var r = enums.ToList();
-            r.Add(new { Value = NullValue, Text = "<null>" });
-            collection = r;
-
+            collection = enums.Append(new { Value = NullValue, Text = "<null>" });
         }
         else
             collection = enums;

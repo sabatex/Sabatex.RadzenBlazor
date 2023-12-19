@@ -132,7 +132,7 @@ public class SabatexRadzenBlazorODataAdapter<TKey> : ISabatexRadzenBlazorDataAda
             throw new ArgumentNullException(nameof(id));
     }
 
-    public async Task<TItem> GetByIdAsync<TItem>(string id, string? expand = null) where TItem : class
+    public async Task<TItem> GetByIdAsync<TItem>(string? id, string? expand = null) where TItem : class
     {
         var uri = new Uri(baseUri, $"{typeof(TItem).Name}({id})");
         uri = Radzen.ODataExtensions.GetODataUri(uri: uri, filter: null, top: null, skip: null, orderby: null, expand: expand, select: null, count: null);
