@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Sabatex.RadzenBlazor
 {
-    public abstract class SabatexRadzenBlazorBaseEditPage<TItem,TKey>:SabatexRadzenBlazorBaseDataPage<TKey> where TItem : EntityBase<TKey>,new()
+    public abstract class SabatexRadzenBlazorBaseEditPage<TItem,TKey>:SabatexRadzenBlazorBaseDataPage<TKey> where TItem : IEntityBase<TKey>,new()
     {
         [Parameter]
         public string? Id { get; set; }

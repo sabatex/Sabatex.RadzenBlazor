@@ -29,7 +29,7 @@ public class SabatexRadzenBlazorODataAdapter<TKey> : ISabatexRadzenBlazorDataAda
         baseUri = new Uri(this.httpClient.BaseAddress ?? new Uri("/"), "odata/");
         this.logger = logger;
     }
-    public async Task<ODataServiceResult<TItem>> GetAsync<TItem>(string? filter, string? orderby, string? expand, int? top, int? skip, bool? count, string? format = null, string? select = null) where TItem : class
+    public async Task<ODataServiceResult<TItem>> GetAsync<TItem>(string? filter, string? orderby, string? expand, int? top, int? skip, bool? count, string? format = null, string? select = null) where TItem : IEntityBase<TKey>
     {
             var uri = new Uri(baseUri, $"{typeof(TItem).Name}/$query");
 
@@ -84,7 +84,7 @@ public class SabatexRadzenBlazorODataAdapter<TKey> : ISabatexRadzenBlazorDataAda
  
     }
 
-    public async Task<TItem> PostAsync<TItem>(TItem? item) where TItem : class
+    public async Task<TItem> PostAsync<TItem>(TItem? item) where TItem : IEntityBase<TKey>
     {
         var uri = new Uri(baseUri, typeof(TItem).Name);
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
@@ -99,7 +99,7 @@ public class SabatexRadzenBlazorODataAdapter<TKey> : ISabatexRadzenBlazorDataAda
     /// <param name="id"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task DeleteAsync<TItem>(TKey id) where TItem : class
+    public async Task DeleteAsync<TItem>(TKey id) where TItem : IEntityBase<TKey>
     {
         var uri = new Uri(baseUri, $"{typeof(TItem).Name}({id})"); ;
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Delete, uri);
@@ -110,7 +110,7 @@ public class SabatexRadzenBlazorODataAdapter<TKey> : ISabatexRadzenBlazorDataAda
         if (responce.StatusCode != System.Net.HttpStatusCode.NoContent)
             throw new Exception($"Delete error with responce code = {responce.StatusCode}");
     }
-    public async Task UpdateAsync<TItem>(TItem item) where TItem : EntityBase<TKey>
+    public async Task UpdateAsync<TItem>(TItem item) where TItem : IEntityBase<TKey>
     {
         var uri = new Uri(baseUri, $"{typeof(TItem).Name}({item.Id})");
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Patch, uri);
@@ -124,7 +124,7 @@ public class SabatexRadzenBlazorODataAdapter<TKey> : ISabatexRadzenBlazorDataAda
                 throw new Exception($"Код відповіді сервера - BadRequest");
     }
 
-    public async Task<TItem> GetByIdAsync<TItem>(TKey id, string? expand = null) where TItem : class
+    public async Task<TItem> GetByIdAsync<TItem>(TKey id, string? expand = null) where TItem : IEntityBase<TKey>
     {
         if (id is not null)
             return await GetByIdAsync<TItem>(id.ToString(),expand);
@@ -132,7 +132,7 @@ public class SabatexRadzenBlazorODataAdapter<TKey> : ISabatexRadzenBlazorDataAda
             throw new ArgumentNullException(nameof(id));
     }
 
-    public async Task<TItem> GetByIdAsync<TItem>(string? id, string? expand = null) where TItem : class
+    public async Task<TItem> GetByIdAsync<TItem>(string? id, string? expand = null) where TItem : IEntityBase<TKey>
     {
         var uri = new Uri(baseUri, $"{typeof(TItem).Name}({id})");
         uri = Radzen.ODataExtensions.GetODataUri(uri: uri, filter: null, top: null, skip: null, orderby: null, expand: expand, select: null, count: null);

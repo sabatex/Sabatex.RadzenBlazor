@@ -17,7 +17,7 @@ namespace Sabatex.RadzenBlazor;
 /// </summary>
 /// <typeparam name="TItem"></typeparam>
 /// <typeparam name="TKey"></typeparam>
-public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadzenBlazorBaseDataPage<TKey>,ISabatexRadzenGridPage  where TItem : EntityBase<TKey>
+public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadzenBlazorBaseDataPage<TKey>,ISabatexRadzenGridPage  where TItem : IEntityBase<TKey>
 {
     [Inject] 
     protected DialogService DialogService { get; set; } = default!;

@@ -21,7 +21,7 @@ public class RadzenGRUDDataAdapter<TKey> : ISabatexRadzenBlazorDataAdapter<TKey>
         _httpClient = httpClient;
 
     }
-    public async Task DeleteAsync<TItem>(TKey id) where TItem : class
+    public async Task DeleteAsync<TItem>(TKey id) where TItem : IEntityBase<TKey>
     {
         if (id == null)
             throw new ArgumentNullException(nameof(id));
@@ -30,7 +30,7 @@ public class RadzenGRUDDataAdapter<TKey> : ISabatexRadzenBlazorDataAdapter<TKey>
     }
 
 
-    public async Task<ODataServiceResult<TItem>> GetAsync<TItem>(string? filter, string? orderby, string? expand, int? top, int? skip, bool? count, string? format = null, string? select = null) where TItem : class
+    public async Task<ODataServiceResult<TItem>> GetAsync<TItem>(string? filter, string? orderby, string? expand, int? top, int? skip, bool? count, string? format = null, string? select = null) where TItem : IEntityBase<TKey>
     {
         var queryBuilder = new QueryBuilder();
         queryBuilder.AddNotNull("filter", filter);
@@ -45,22 +45,22 @@ public class RadzenGRUDDataAdapter<TKey> : ISabatexRadzenBlazorDataAdapter<TKey>
         return await Radzen.HttpResponseMessageExtensions.ReadAsync<Radzen.ODataServiceResult<TItem>>(responce);
     }
 
-    public Task<TItem> GetByIdAsync<TItem>(TKey id, string? expand = null) where TItem : class
+    public Task<TItem> GetByIdAsync<TItem>(TKey id, string? expand = null) where TItem : IEntityBase<TKey>
     {
         throw new NotImplementedException();
     }
 
-    public Task<TItem> GetByIdAsync<TItem>(string id, string? expand = null) where TItem : class
+    public Task<TItem> GetByIdAsync<TItem>(string id, string? expand = null) where TItem : IEntityBase<TKey>
     {
         throw new NotImplementedException();
     }
 
-    public Task<TItem> PostAsync<TItem>(TItem? item) where TItem : class
+    public Task<TItem> PostAsync<TItem>(TItem? item) where TItem : IEntityBase<TKey>
     {
         throw new NotImplementedException();
     }
 
-    public Task UpdateAsync<TItem>(TItem item) where TItem : EntityBase<TKey>
+    public Task UpdateAsync<TItem>(TItem item) where TItem : IEntityBase<TKey>
     {
         throw new NotImplementedException();
     }
