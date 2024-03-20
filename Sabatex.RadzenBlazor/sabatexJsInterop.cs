@@ -17,7 +17,7 @@ public class SabatexJsInterop : IAsyncDisposable
     public SabatexJsInterop(IJSRuntime jsRuntime)
     {
         moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
-            "import", "./_content/Sabatex.RadzenBlazor/sabatexRadzenBlazor.js").AsTask());
+            "import", "./_content/Sabatex.RadzenBlazor/sabatex.js").AsTask());
     }
 
     public async ValueTask<string> Prompt(string message)

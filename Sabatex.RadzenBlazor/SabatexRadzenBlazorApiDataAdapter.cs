@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using Radzen;
+using Radzen.Blazor.Rendering;
 using Sabatex.Core;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Collections.Specialized;
 using System.Data.Common;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -16,7 +18,7 @@ using System.Web;
 
 namespace Sabatex.RadzenBlazor;
 
-public class SabatexRadzenBlazorODataAdapter<TKey> : ISabatexRadzenBlazorDataAdapter<TKey>
+public class SabatexRadzenBlazorApiDataAdapter<TKey> : ISabatexRadzenBlazorDataAdapter<TKey>
 {
     const string nullResponce = "The responece return null";
 
@@ -25,65 +27,17 @@ public class SabatexRadzenBlazorODataAdapter<TKey> : ISabatexRadzenBlazorDataAda
     private readonly ILogger<SabatexRadzenBlazorODataAdapter<TKey>> logger;
     private readonly NavigationManager navigationManager;
 
-    public static Uri GetODataUri2(Uri uri, string filter = null, int? top = null, int? skip = null, string orderby = null, string expand = null, string select = null, bool? count = null,string? apply=null)
-    {
-        UriBuilder uriBuilder = new UriBuilder(uri);
-        NameValueCollection nameValueCollection = HttpUtility.ParseQueryString(uriBuilder.Query);
-        if (!string.IsNullOrEmpty(filter))
-        {
-            nameValueCollection["$filter"] = filter.Replace("\"", "'") ?? "";
-        }
-
-        if (top.HasValue)
-        {
-            nameValueCollection["$top"] = $"{top}";
-        }
-
-        if (skip.HasValue)
-        {
-            nameValueCollection["$skip"] = $"{skip}";
-        }
-
-        if (!string.IsNullOrEmpty(orderby))
-        {
-            nameValueCollection["$orderby"] = orderby ?? "";
-        }
-
-        if (!string.IsNullOrEmpty(expand))
-        {
-            nameValueCollection["$expand"] = expand ?? "";
-        }
-
-        if (!string.IsNullOrEmpty(select))
-        {
-            nameValueCollection["$select"] = select ?? "";
-        }
-        if (!string.IsNullOrEmpty(apply))
-        {
-            nameValueCollection["$apply"] = apply ?? "";
-        }
-
-        if (count.HasValue)
-        {
-            nameValueCollection["$count"] = $"{count}".ToLower();
-        }
-
-        uriBuilder.Query = nameValueCollection.ToString();
-        return uriBuilder.Uri;
-    }
-
-
-public SabatexRadzenBlazorODataAdapter(HttpClient httpClient, ILogger<SabatexRadzenBlazorODataAdapter<TKey>> logger, NavigationManager navigationManager)
+    public SabatexRadzenBlazorApiDataAdapter(HttpClient httpClient, ILogger<SabatexRadzenBlazorODataAdapter<TKey>> logger, NavigationManager navigationManager)
     {
         this.httpClient = httpClient;
         this.navigationManager = navigationManager;
-        baseUri = new Uri(this.httpClient.BaseAddress ?? new Uri(navigationManager.BaseUri), "odata/");
+        baseUri = new Uri(this.httpClient.BaseAddress ?? new Uri(navigationManager.BaseUri), "api/");
         this.logger = logger;
     }
     public async Task<ODataServiceResult<TItem>> GetAsync<TItem>(string? filter, string? orderby, string? expand, int? top, int? skip, bool? count, string? format = null, string? select = null,string? apply = null) where TItem : class, IEntityBase<TKey>
     {
         var uri = new Uri(baseUri, $"{typeof(TItem).Name}");
-        uri = GetODataUri2(uri: uri, filter: filter, top: top, skip: skip, orderby: orderby, expand: expand, select: select, count: count,apply);
+        //uri = GetODataUri(uri: uri, filter: filter, top: top, skip: skip, orderby: orderby, expand: expand, select: select, count: count,apply);
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
 
         var response = await httpClient.SendAsync(httpRequestMessage);
@@ -94,26 +48,26 @@ public SabatexRadzenBlazorODataAdapter(HttpClient httpClient, ILogger<SabatexRad
     }
     public async Task<ODataServiceResult<TItem>> GetAsync<TItem>(QueryParams queryParams) where TItem : class, IEntityBase<TKey>
     {
-        var args = queryParams.Args;
-        var uri = new Uri(baseUri, $"{typeof(TItem).Name}");
-        string expand = string.Empty;
-        uri = Radzen.ODataExtensions.GetODataUri(uri: uri, filter: args.Filter, top: args.Top, skip: args.Skip, orderby: args.OrderBy, expand: expand, count: args.Top != null && args.Skip != null);
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
-
+        var uri = new Uri(baseUri, $"{typeof(TItem).Name}/get");
+        //uri = GetODataUri(uri: uri, filter: filter, top: top, skip: skip, orderby: orderby, expand: expand, select: select, count: count,apply);
+        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
+        httpRequestMessage.Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(queryParams), Encoding.UTF8, "application/json");
         var response = await httpClient.SendAsync(httpRequestMessage);
         if (response.StatusCode != System.Net.HttpStatusCode.OK)
             throw new Exception($"Помилка запиту {response.StatusCode}");
         return await Radzen.HttpResponseMessageExtensions.ReadAsync<Radzen.ODataServiceResult<TItem>>(response);
-
     }
-
     public async Task<TItem> PostAsync<TItem>(TItem? item) where TItem : class, IEntityBase<TKey>
     {
         var uri = new Uri(baseUri, typeof(TItem).Name);
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
-        httpRequestMessage.Content = new StringContent(Radzen.ODataJsonSerializer.Serialize(item), Encoding.UTF8, "application/json");
-        var response = await httpClient.SendAsync(httpRequestMessage);
-        return await Radzen.HttpResponseMessageExtensions.ReadAsync<TItem>(response);
+        var response = await httpClient.PostAsJsonAsync<TItem>(uri, item);
+        if (response.IsSuccessStatusCode)
+            return await response.ReadAsync<TItem>();
+        throw new Exception($"Помилка запису {response.StatusCode}"); ;
+        //var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
+        //httpRequestMessage.Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(item), Encoding.UTF8, "application/json");
+        //var response = await httpClient.SendAsync(httpRequestMessage);
+        //return await httpClient.PostAsync Radzen.HttpResponseMessageExtensions.ReadAsync<TItem>(response);
     }
     /// <summary>
     /// 
@@ -165,52 +119,5 @@ public SabatexRadzenBlazorODataAdapter(HttpClient httpClient, ILogger<SabatexRad
 
     }
 
-}
 
-internal struct ODataSearchFilterBuilder
-{
-    StringBuilder sb;
-    bool first;
-    public ODataSearchFilterBuilder()
-    {
-        sb = new StringBuilder();
-        first = true;
-
-    }
-
-    void AddStringSearch(string FieldName, string value)
-    {
-        AddOperation();
-        sb.Append($"contains(tolower({FieldName}),'{value}')");
-    }
-    void AddIntSearch(string FieldName, string value)
-    {
-        if (int.TryParse(value, out int _))
-        {
-            AddOperation();
-            sb.Append($"{FieldName} eq {value}");
-        }
-    }
-    void AddOperation()
-    {
-        if (!first) sb.Append(" or ");
-        first = false;
-    }
-    public void AddField(FieldDescriptor fieldDescriptor, string value)
-    {
-        if (fieldDescriptor.FieldType == typeof(string))
-        {
-            AddStringSearch(fieldDescriptor.Name, value);
-        }
-        else if (fieldDescriptor.FieldType == typeof(int))
-        {
-            AddIntSearch(fieldDescriptor.Name, value);
-        }
-
-
-    }
-    public override string ToString()
-    {
-        return sb.ToString();
-    }
 }

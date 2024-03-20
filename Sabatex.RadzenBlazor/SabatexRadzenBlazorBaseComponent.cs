@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http;
 using Radzen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Sabatex.RadzenBlazor
 {
@@ -17,10 +21,15 @@ namespace Sabatex.RadzenBlazor
         [Inject]
         protected NotificationService NotificationService { get; set; } = default!;
         [Inject]
-        protected Blazored.LocalStorage.ISyncLocalStorageService LocalStorageService { get; set; } = default!;
-
-        [Inject]
         protected SabatexJsInterop SabatexJS {get;set;}=default!;
+        [Inject]
+        protected AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
 
-     }
+        protected async Task<Guid> GetUserIdAsync()
+        {
+            return Guid.Parse((await AuthenticationStateProvider.GetAuthenticationStateAsync())?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty);
+        } 
+
+
+    }
 }

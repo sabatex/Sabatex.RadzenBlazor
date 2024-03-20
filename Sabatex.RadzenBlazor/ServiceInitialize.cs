@@ -1,5 +1,4 @@
-﻿using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Http.Extensions;
+﻿using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Radzen;
 using System;
@@ -19,7 +18,6 @@ namespace Sabatex.RadzenBlazor
             services.AddScoped<TooltipService>();
             services.AddScoped<ContextMenuService>();
             services.AddScoped<SabatexJsInterop>();
-            services.AddBlazoredLocalStorage();
             services.AddSingleton<SabatexBlazorAppState>();
             return services;
         }

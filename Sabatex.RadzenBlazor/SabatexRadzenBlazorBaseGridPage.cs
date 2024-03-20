@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 using Radzen;
 using Radzen.Blazor;
 using Sabatex.Core;
@@ -17,7 +18,7 @@ namespace Sabatex.RadzenBlazor;
 /// </summary>
 /// <typeparam name="TItem"></typeparam>
 /// <typeparam name="TKey"></typeparam>
-public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadzenBlazorBaseDataPage<TKey>,ISabatexRadzenGridPage  where TItem : IEntityBase<TKey>
+public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadzenBlazorBaseDataPage<TKey>,ISabatexRadzenGridPage  where TItem : class, IEntityBase<TKey>
 {
     [Inject] 
     protected DialogService DialogService { get; set; } = default!;
@@ -58,7 +59,10 @@ public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadz
         {
             ["returnUrl"] = NavigationManager.ToBaseRelativePath(NavigationManager.Uri)
         };
- 
+        if (ForeginKey != null)
+            queryParams.Add(ForeginKey.Name,ForeginKey.Id);
+
+
         var uri = NavigationManager.GetUriWithQueryParameters($"{EditPageUri}{idRoute}", queryParams);
  
         NavigationManager.NavigateTo(uri);
@@ -123,6 +127,8 @@ public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadz
         IEnumerable<FieldDescriptor>? filterFields = null;
         try
         {
+
+
             if (dataCollection == null)
                 throw new ArgumentNullException(nameof(dataCollection));
             string filter = string.Empty;
@@ -155,13 +161,15 @@ public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadz
                     filter = $"{filter} and {ForeginKey.Name} eq {ForeginKey.Id}";
                 }
             }
+            var queryParams = new QueryParams(args, ForeginKey);
 
-            var result = await DataAdapter.GetAsync<TItem>(orderby: $"{args.OrderBy}",
-                                               top: args.Top,
-                                               skip: args.Skip,
-                                               count: args.Top != null && args.Skip != null,
-                                               expand: ExpandGrid,
-                                               filter: filter);
+            var result = await DataAdapter.GetAsync<TItem>(queryParams);
+            //var result = await DataAdapter.GetAsync<TItem>(orderby: $"{args.OrderBy}",
+                                               //top: args.Top,
+                                               //skip: args.Skip,
+                                               //count: args.Top != null && args.Skip != null,
+                                               //expand: ExpandGrid,
+                                               //filter: filter);
             dataCollection.Value = result.Value;
             dataCollection.Count = result.Count;
         }
@@ -185,26 +193,41 @@ public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadz
         set
         {
             columnsPerPage = value;
-            LocalStorageService?.SetItem(PageName + nameof(ColumnsPerPage), value);
+            JSRuntime.InvokeVoidAsync("localStorage.setItem",PageName + nameof(ColumnsPerPage), value).GetAwaiter().GetResult();
         }
     }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        //if (grid == null)
+        //{
+        //    NotificationService?.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = $"Error", Detail = $"НЕ призначено звязок для grid" });
+        //    return;
+        //}
+
+        //columnsPerPage = LocalStorageService?.GetItem<int>(PageName + nameof(ColumnsPerPage)) ?? 10;
+        //if (columnsPerPage == 0) 
+        //{
+        //    columnsPerPage = 10; 
+        //}
+
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
         if (grid == null)
         {
             NotificationService?.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = $"Error", Detail = $"НЕ призначено звязок для grid" });
             return;
         }
 
-        columnsPerPage = LocalStorageService?.GetItem<int>(PageName + nameof(ColumnsPerPage)) ?? 10;
-        if (columnsPerPage == 0) 
-        {
-            columnsPerPage = 10; 
-        }
+        //columnsPerPage = JSRuntime.InvokeAsync<int?>("localStorage.getItem", PageName + nameof(ColumnsPerPage)).GetAwaiter().GetResult() ?? 10;
+        //if (columnsPerPage == 0)
+        //{
+        //    columnsPerPage = 10;
+        //}
 
     }
-
-  
 }
