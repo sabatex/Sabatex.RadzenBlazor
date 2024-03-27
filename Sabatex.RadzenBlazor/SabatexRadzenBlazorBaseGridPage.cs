@@ -193,7 +193,7 @@ public abstract class SabatexRadzenBlazorBaseGridPage<TItem, TKey> : SabatexRadz
         set
         {
             columnsPerPage = value;
-            JSRuntime.InvokeVoidAsync("localStorage.setItem",PageName + nameof(ColumnsPerPage), value).GetAwaiter().GetResult();
+            //JSRuntime.InvokeVoidAsync("localStorage.setItem",PageName + nameof(ColumnsPerPage), value).GetAwaiter().GetResult();
         }
     }
 

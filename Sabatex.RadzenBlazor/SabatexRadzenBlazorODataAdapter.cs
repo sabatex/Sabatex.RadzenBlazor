@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data.Common;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -107,14 +109,60 @@ public SabatexRadzenBlazorODataAdapter(HttpClient httpClient, ILogger<SabatexRad
 
     }
 
-    public async Task<TItem> PostAsync<TItem>(TItem? item) where TItem : class, IEntityBase<TKey>
+    public async Task<SabatexValidationModel<TItem>> PostAsync<TItem>(TItem? item) where TItem : class, IEntityBase<TKey>
     {
         var uri = new Uri(baseUri, typeof(TItem).Name);
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
         httpRequestMessage.Content = new StringContent(Radzen.ODataJsonSerializer.Serialize(item), Encoding.UTF8, "application/json");
         var response = await httpClient.SendAsync(httpRequestMessage);
-        return await Radzen.HttpResponseMessageExtensions.ReadAsync<TItem>(response);
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await Radzen.HttpResponseMessageExtensions.ReadAsync<TItem>(response);
+            if (result == null)
+                throw new DeserializeException();
+            return new SabatexValidationModel<TItem>(result);
+        }
+
+        var errors = await response.Content.ReadFromJsonAsync<Dictionary<string, List<string>>>() ?? new Dictionary<string, List<string>>();
+
+        if (response.StatusCode == HttpStatusCode.BadRequest && errors.Any())
+        {
+            return new SabatexValidationModel<TItem>(null,errors);
+        }
+        throw new Exception($"Error Post with status code: {response.StatusCode}");
+     }
+ 
+    public async Task<SabatexValidationModel<TItem>> UpdateAsync<TItem>(TItem item) where TItem : class, IEntityBase<TKey>
+    {
+        var uri = new Uri(baseUri, $"{typeof(TItem).Name}({item.Id})");
+        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Patch, uri);
+        httpRequestMessage.Content = new StringContent(Radzen.ODataJsonSerializer.Serialize(item), Encoding.UTF8, "application/json");
+        var response = await httpClient.SendAsync(httpRequestMessage);
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await Radzen.HttpResponseMessageExtensions.ReadAsync<TItem>(response);
+            if (result == null)
+                throw new DeserializeException();
+            return new SabatexValidationModel<TItem>(result);
+        }
+
+        var errors = await response.Content.ReadFromJsonAsync<Dictionary<string, List<string>>>() ?? new Dictionary<string, List<string>>();
+
+        if (response.StatusCode == HttpStatusCode.BadRequest && errors.Any())
+        {
+            return new SabatexValidationModel<TItem>(null, errors);
+        }
+        throw new Exception($"Error Post with status code: {response.StatusCode}");
+
+        //if (responce == null)
+        //        throw new Exception(nullResponce);
+        //if (responce.StatusCode == System.Net.HttpStatusCode.NotFound)
+        //        throw new Exception($"Відсутній запис для Entity<{typeof(TItem).Name}> з Id = {item.Id}");
+        //if (responce.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        //        throw new Exception($"Код відповіді сервера - BadRequest");
     }
+    
+    
     /// <summary>
     /// 
     /// </summary>
@@ -132,19 +180,6 @@ public SabatexRadzenBlazorODataAdapter(HttpClient httpClient, ILogger<SabatexRad
 
         if (responce.StatusCode != System.Net.HttpStatusCode.NoContent)
             throw new Exception($"Delete error with responce code = {responce.StatusCode}");
-    }
-    public async Task UpdateAsync<TItem>(TItem item) where TItem : class, IEntityBase<TKey>
-    {
-        var uri = new Uri(baseUri, $"{typeof(TItem).Name}({item.Id})");
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Patch, uri);
-        httpRequestMessage.Content = new StringContent(Radzen.ODataJsonSerializer.Serialize(item), Encoding.UTF8, "application/json");
-        var responce = await httpClient.SendAsync(httpRequestMessage);
-        if (responce == null)
-                throw new Exception(nullResponce);
-        if (responce.StatusCode == System.Net.HttpStatusCode.NotFound)
-                throw new Exception($"Відсутній запис для Entity<{typeof(TItem).Name}> з Id = {item.Id}");
-        if (responce.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                throw new Exception($"Код відповіді сервера - BadRequest");
     }
 
     public async Task<TItem> GetByIdAsync<TItem>(TKey id, string? expand = null) where TItem : class, IEntityBase<TKey>

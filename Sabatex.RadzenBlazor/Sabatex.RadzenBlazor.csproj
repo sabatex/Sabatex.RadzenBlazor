@@ -46,5 +46,8 @@
 		<Content Update="EnumDropDown.razor">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		</Content>
+		<Content Update="wwwroot\Sabatex.js">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 </Project>

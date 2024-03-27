@@ -17,7 +17,7 @@ public class SabatexJsInterop : IAsyncDisposable
     public SabatexJsInterop(IJSRuntime jsRuntime)
     {
         moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
-            "import", "./_content/Sabatex.RadzenBlazor/sabatex.js").AsTask());
+            "import", "./_content/Sabatex.RadzenBlazor/Sabatex.js").AsTask());
     }
 
     public async ValueTask<string> Prompt(string message)
@@ -33,7 +33,7 @@ public class SabatexJsInterop : IAsyncDisposable
 
     public async ValueTask DownloadStringAsFile(string fileName,string text){
         var module = await moduleTask.Value;
-        await module.InvokeAsync<object>("downloadStrigAsFile",fileName,text);
+        await module.InvokeAsync<object>("sabatex.downloadStrigAsFile", fileName,text);
     }
 
     public async ValueTask<double> GetElementClientHeight(ElementReference element) {

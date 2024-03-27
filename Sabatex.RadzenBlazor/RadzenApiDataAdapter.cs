@@ -55,17 +55,18 @@ public class RadzenGRUDDataAdapter<TKey> : ISabatexRadzenBlazorDataAdapter<TKey>
         throw new NotImplementedException();
     }
 
-    public Task<TItem> PostAsync<TItem>(TItem? item) where TItem : class, IEntityBase<TKey>
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task UpdateAsync<TItem>(TItem item) where TItem : class, IEntityBase<TKey>
+    
+    public Task<SabatexValidationModel<TItem>> UpdateAsync<TItem>(TItem item) where TItem : class, IEntityBase<TKey>
     {
         throw new NotImplementedException();
     }
 
     Task<ODataServiceResult<TItem>> ISabatexRadzenBlazorDataAdapter<TKey>.GetAsync<TItem>(QueryParams queryParams)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<SabatexValidationModel<TItem>> ISabatexRadzenBlazorDataAdapter<TKey>.PostAsync<TItem>(TItem? item) where TItem : class
     {
         throw new NotImplementedException();
     }

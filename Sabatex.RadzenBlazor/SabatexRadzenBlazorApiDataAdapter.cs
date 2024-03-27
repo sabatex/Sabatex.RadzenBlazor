@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data.Common;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
@@ -48,26 +49,33 @@ public class SabatexRadzenBlazorApiDataAdapter<TKey> : ISabatexRadzenBlazorDataA
     }
     public async Task<ODataServiceResult<TItem>> GetAsync<TItem>(QueryParams queryParams) where TItem : class, IEntityBase<TKey>
     {
-        var uri = new Uri(baseUri, $"{typeof(TItem).Name}/get");
-        //uri = GetODataUri(uri: uri, filter: filter, top: top, skip: skip, orderby: orderby, expand: expand, select: select, count: count,apply);
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
-        httpRequestMessage.Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(queryParams), Encoding.UTF8, "application/json");
-        var response = await httpClient.SendAsync(httpRequestMessage);
+        var uri = new Uri(baseUri, $"{typeof(TItem).Name}?json={System.Text.Json.JsonSerializer.Serialize(queryParams)}");
+        var response = await httpClient.GetAsync(uri);
         if (response.StatusCode != System.Net.HttpStatusCode.OK)
-            throw new Exception($"Помилка запиту {response.StatusCode}");
-        return await Radzen.HttpResponseMessageExtensions.ReadAsync<Radzen.ODataServiceResult<TItem>>(response);
+                throw new Exception($"Помилка запиту {response.StatusCode}");
+            return await Radzen.HttpResponseMessageExtensions.ReadAsync<Radzen.ODataServiceResult<TItem>>(response);
     }
-    public async Task<TItem> PostAsync<TItem>(TItem? item) where TItem : class, IEntityBase<TKey>
+    public async Task<SabatexValidationModel<TItem>> PostAsync<TItem>(TItem? item) where TItem : class, IEntityBase<TKey>
     {
+        if (item == null) throw new ArgumentNullException("item");
+
         var uri = new Uri(baseUri, typeof(TItem).Name);
         var response = await httpClient.PostAsJsonAsync<TItem>(uri, item);
         if (response.IsSuccessStatusCode)
-            return await response.ReadAsync<TItem>();
-        throw new Exception($"Помилка запису {response.StatusCode}"); ;
-        //var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
-        //httpRequestMessage.Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(item), Encoding.UTF8, "application/json");
-        //var response = await httpClient.SendAsync(httpRequestMessage);
-        //return await httpClient.PostAsync Radzen.HttpResponseMessageExtensions.ReadAsync<TItem>(response);
+        {
+            var result = await response.Content.ReadFromJsonAsync<TItem>();
+            if (result == null)
+                throw new DeserializeException();
+            return new SabatexValidationModel<TItem>(result);
+        }
+                    
+        var errors = await response.Content.ReadFromJsonAsync<Dictionary<string, List<string>>>() ?? new Dictionary<string, List<string>>();
+        
+        if (response.StatusCode == HttpStatusCode.BadRequest &&   errors.Any())
+        {
+            return new SabatexValidationModel<TItem>(null,errors);
+        }
+        throw new Exception($"Error Post with status code: {response.StatusCode}");
     }
     /// <summary>
     /// 
@@ -78,27 +86,35 @@ public class SabatexRadzenBlazorApiDataAdapter<TKey> : ISabatexRadzenBlazorDataA
     /// <exception cref="Exception"></exception>
     public async Task DeleteAsync<TItem>(TKey id) where TItem : class, IEntityBase<TKey>
     {
-        var uri = new Uri(baseUri, $"{typeof(TItem).Name}({id})"); ;
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Delete, uri);
-        var responce = await httpClient.SendAsync(httpRequestMessage);
+        var uri = new Uri(baseUri, $"{typeof(TItem).Name}/{id}"); ;
+        var responce = await httpClient.DeleteAsync(uri); 
         if (responce == null)
             throw new Exception(nullResponce);
 
         if (responce.StatusCode != System.Net.HttpStatusCode.NoContent)
             throw new Exception($"Delete error with responce code = {responce.StatusCode}");
     }
-    public async Task UpdateAsync<TItem>(TItem item) where TItem : class, IEntityBase<TKey>
+    public async Task<SabatexValidationModel<TItem>> UpdateAsync<TItem>(TItem item) where TItem : class, IEntityBase<TKey>
     {
-        var uri = new Uri(baseUri, $"{typeof(TItem).Name}({item.Id})");
+        var uri = new Uri(baseUri, $"{typeof(TItem).Name}/{item.Id}");
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Patch, uri);
         httpRequestMessage.Content = new StringContent(Radzen.ODataJsonSerializer.Serialize(item), Encoding.UTF8, "application/json");
-        var responce = await httpClient.SendAsync(httpRequestMessage);
-        if (responce == null)
-                throw new Exception(nullResponce);
-        if (responce.StatusCode == System.Net.HttpStatusCode.NotFound)
-                throw new Exception($"Відсутній запис для Entity<{typeof(TItem).Name}> з Id = {item.Id}");
-        if (responce.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                throw new Exception($"Код відповіді сервера - BadRequest");
+        var response = await httpClient.PutAsJsonAsync(uri,item);
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<TItem>();
+            if (result == null)
+                throw new DeserializeException();
+            return new SabatexValidationModel<TItem>(result);
+        }
+
+        var errors = await response.Content.ReadFromJsonAsync<Dictionary<string, List<string>>>() ?? new Dictionary<string, List<string>>();
+
+        if (response.StatusCode == HttpStatusCode.BadRequest && errors.Any())
+        {
+            return new SabatexValidationModel<TItem>(null, errors);
+        }
+        throw new Exception($"Error Post with status code: {response.StatusCode}");
     }
 
     public async Task<TItem> GetByIdAsync<TItem>(TKey id, string? expand = null) where TItem : class, IEntityBase<TKey>
@@ -111,8 +127,8 @@ public class SabatexRadzenBlazorApiDataAdapter<TKey> : ISabatexRadzenBlazorDataA
 
     public async Task<TItem> GetByIdAsync<TItem>(string? id, string? expand = null) where TItem : class, IEntityBase<TKey>
     {
-        var uri = new Uri(baseUri, $"{typeof(TItem).Name}({id})");
-        uri = Radzen.ODataExtensions.GetODataUri(uri: uri, filter: null, top: null, skip: null, orderby: null, expand: expand, select: null, count: null);
+        var uri = new Uri(baseUri, $"{typeof(TItem).Name}/{id}");
+        //uri = Radzen.ODataExtensions.GetODataUri(uri: uri, filter: null, top: null, skip: null, orderby: null, expand: expand, select: null, count: null);
         var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
         var response = await httpClient.SendAsync(httpRequestMessage);
         return await Radzen.HttpResponseMessageExtensions.ReadAsync<TItem>(response);

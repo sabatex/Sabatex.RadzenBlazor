@@ -1,0 +1,221 @@
+﻿@using Sabatex.Core
+@typeparam TKey
+@typeparam TItem  where TItem : class, IEntityBase<TKey>
+@inherits SabatexRadzenBlazorBaseDataPage<TKey>
+
+@inject DialogService DialogService
+
+
+    <RadzenStack Orientation="Orientation.Horizontal" class="rz-py-2">
+        <RadzenButton Text="Add" Icon="add" Click="()=>NavigateToEditPage()" Disabled="IsPageRO" />
+    <RadzenButton Text="Edit" Icon="edit" Click="()=>NavigateToEditPage(SelectedItems?.First()?.Id.ToString())" Disabled=@(IsGridRO || !IsItemSelected)  />
+    <RadzenButton Text="Delete" Icon="delete" Click="()=>DeleteButtonClick(CurrentItem)" Disabled=@(IsGridRO || !IsItemSelected)  />
+    @if (Buttons != null)
+    {
+        @Buttons(CurrentItem)
+    }
+
+    </RadzenStack>
+    <RadzenDataGrid TItem="TItem"
+                    Columns="Columns"
+                    @ref="grid"
+                    Data="@dataCollection.Value"
+                    Count="@dataCollection.Count"
+                    LoadData="@GridLoadData"
+                    IsLoading="@IsGridDataLoading"
+                    AllowFiltering="true"
+                    AllowSorting="true"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    @bind-Value=@SelectedItems
+                    Density="Density.Compact"
+                    AllowVirtualization=true
+                    Style=@gridStyle
+                    RowDoubleClick="@RowDoubleClick">
+        >
+
+
+    </RadzenDataGrid>
+
+
+
+@code {
+    [Parameter]
+    public RenderFragment Columns { get; set; } = default!;
+    [Parameter]
+    public RenderFragment<TItem?> Buttons { get; set; } = default!;
+    [Parameter]
+    public ForeginKey? ForeginKey{ get; set; }
+
+    public IEnumerable<TItem> Items => dataCollection.Value;
+
+    public bool IsGridRO { get; set; } = false;
+    protected RadzenDataGrid<TItem> grid = default!;
+    protected ODataServiceResult<TItem> dataCollection = new ODataServiceResult<TItem>();
+    protected bool IsGridDataLoading = false;
+    protected IList<TItem>? SelectedItems;
+    private TItem? CurrentItem => SelectedItems?.First();
+
+    string gridStyle = "height:200px";
+    
+    public virtual string EditPageName { get; set; } = "edit";
+
+
+    bool IsItemSelected => SelectedItems?.First() != null;
+
+    
+    
+    protected async Task GridLoadData(LoadDataArgs args)
+    {
+        IsGridDataLoading = true;
+        IEnumerable<FieldDescriptor>? filterFields = null;
+        try
+        {
+
+
+            if (dataCollection == null)
+                throw new ArgumentNullException(nameof(dataCollection));
+            string filter = string.Empty;
+            if (filterFields != null)
+            {
+                // search in combobox
+            }
+            else
+                filter = args.Filter;
+
+            if (filterFields != null && !string.IsNullOrWhiteSpace(args.Filter))
+            {
+                ODataSearchFilterBuilder filterBuilder = new ODataSearchFilterBuilder();
+                foreach (var field in filterFields.OrderBy(o => o.priority))
+                {
+                    filterBuilder.AddField(field, args.Filter);
+                }
+                filter = filterBuilder.ToString();
+            }
+
+
+            if (ForeginKey != null)
+            {
+                if (string.IsNullOrWhiteSpace(filter))
+                {
+                    filter = $"{ForeginKey.Name} eq {ForeginKey.Id}";
+                }
+                else
+                {
+                    filter = $"{filter} and {ForeginKey.Name} eq {ForeginKey.Id}";
+                }
+            }
+            var queryParams = new QueryParams(args, ForeginKey);
+
+            var result = await DataAdapter.GetAsync<TItem>(queryParams);
+            //var result = await DataAdapter.GetAsync<TItem>(orderby: $"{args.OrderBy}",
+            //top: args.Top,
+            //skip: args.Skip,
+            //count: args.Top != null && args.Skip != null,
+            //expand: ExpandGrid,
+            //filter: filter);
+            dataCollection.Value = result.Value;
+            dataCollection.Count = result.Count;
+        }
+        catch (Exception e)
+        {
+            string error = $"Помилка отримання даних {typeof(TItem).Name}  {e.Message}";
+            NotificationService?.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Помилка",
+                    Detail = error
+                });
+        }
+        IsGridDataLoading = false;
+    }
+    public virtual async Task AddButtonClick(MouseEventArgs args)
+    {
+        NavigateToEditPage(null);
+        await Task.Yield();
+    }
+    protected virtual string EditPageUri
+    {
+        get
+        {
+            var url = NavigationManager.ToBaseRelativePath(NavigationManager.Uri).ToLower();
+            var index = url.LastIndexOf("/");
+            string baseRoute = string.Empty;
+            if (index != -1)
+                baseRoute = url.Substring(0, index + 1);
+            //return $"{baseRoute}{typeof(TItem).Name}-edit";
+            return $"{baseRoute}{EditPageName}";
+        }
+    }
+
+    private void NavigateToEditPage(string? id=null)
+    {
+        string? idRoute = string.Empty;
+        if (id != null)
+            idRoute = $"/{id}";
+
+
+        var queryParams = new Dictionary<string, object?>()
+            {
+                ["returnUrl"] = NavigationManager.ToBaseRelativePath(NavigationManager.Uri)
+            };
+        if (ForeginKey != null)
+            queryParams.Add(ForeginKey.Name, ForeginKey.Id);
+
+
+        var uri = NavigationManager.GetUriWithQueryParameters($"{EditPageUri}{idRoute}", queryParams);
+
+        NavigationManager.NavigateTo(uri);
+    }
+
+    protected virtual async Task RowDoubleClick(DataGridRowMouseEventArgs<TItem> args)
+    {
+        if (args.Data is not null)
+            NavigateToEditPage(args.Data?.Id?.ToString());
+        else
+            throw new NullReferenceException("The args.Data is null");
+
+        await Task.Yield();
+    }
+
+
+    protected virtual async Task EditButtonClick(TItem data)
+    {
+        if (data is not null)
+            NavigateToEditPage(data.Id?.ToString());
+        await Task.Yield();
+    }
+    protected virtual async Task DeleteButtonClick(TItem data)
+    {
+        try
+        {
+            if (DialogService == null)
+            {
+                throw new Exception("The DialogService=null sabatex.RadzenBlazor->InlineEditGridPage->GridDeleteButtonClick()");
+            }
+            if (await DialogService.Confirm("Ви впевнені?", "Видалення запису", new ConfirmOptions() { OkButtonText = "Так", CancelButtonText = "Ні" }) == true)
+            {
+                try
+                {
+                    await DataAdapter.DeleteAsync<TItem>(data.Id);
+                    await grid.Reload();
+                }
+                catch (Exception e)
+                {
+                    NotificationService?.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = $"Error", Detail = $"Unable to delete {data} with Error: {e.Message}" });
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            NotificationService?.Notify(new NotificationMessage()
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = $"Помилка",
+                    Detail = $"Не можливо видалити Error:{e.Message}"
+                });
+
+        }
+    }
+
+
+}

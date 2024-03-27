@@ -30,6 +30,10 @@ namespace Sabatex.RadzenBlazor
             return Guid.Parse((await AuthenticationStateProvider.GetAuthenticationStateAsync())?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty);
         } 
 
+        protected async Task<bool> UserIsInRore(string role)
+        {
+            return (await AuthenticationStateProvider.GetAuthenticationStateAsync())?.User.IsInRole(role) ?? false;
+        }
 
     }
 }

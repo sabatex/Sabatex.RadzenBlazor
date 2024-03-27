@@ -1,4 +1,6 @@
-﻿const sabatex = {
+﻿
+
+export const sabatex = {
     downloadStrigAsFile : function (fileName, content) {
         let link = document.createElement("a");
         link.download = fileName;

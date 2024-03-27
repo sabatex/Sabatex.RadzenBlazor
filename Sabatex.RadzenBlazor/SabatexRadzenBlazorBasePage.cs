@@ -10,10 +10,10 @@ namespace Sabatex.RadzenBlazor
 {
     public abstract class SabatexRadzenBlazorBasePage : SabatexRadzenBlazorBaseComponent
     {
-        [Inject]
-        protected SabatexBlazorAppState AppState {get;set;}=default!;
+        //[Inject]
+        //protected SabatexBlazorAppState AppState {get;set;}=default!;
 
-        protected string PageName { get => AppState.PageHeader; set => AppState.PageHeader = value; }
+        //protected string PageName { get => AppState.PageHeader; set => AppState.PageHeader = value; }
 
     }
 }
