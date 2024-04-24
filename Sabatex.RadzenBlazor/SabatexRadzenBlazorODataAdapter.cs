@@ -27,7 +27,7 @@ public class SabatexRadzenBlazorODataAdapter<TKey> : ISabatexRadzenBlazorDataAda
     private readonly ILogger<SabatexRadzenBlazorODataAdapter<TKey>> logger;
     private readonly NavigationManager navigationManager;
 
-    public static Uri GetODataUri2(Uri uri, string filter = null, int? top = null, int? skip = null, string orderby = null, string expand = null, string select = null, bool? count = null,string? apply=null)
+    public static Uri GetODataUri2(Uri uri, string? filter = null, int? top = null, int? skip = null, string? orderby = null, string? expand = null, string? select = null, bool? count = null,string? apply=null)
     {
         UriBuilder uriBuilder = new UriBuilder(uri);
         NameValueCollection nameValueCollection = HttpUtility.ParseQueryString(uriBuilder.Query);

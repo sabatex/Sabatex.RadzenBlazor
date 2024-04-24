@@ -3,8 +3,9 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Version>3.1.0-alpha13</Version>
+		<Version>3.1.0</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<UserSecretsId>8e1e118a-1604-4f8a-bb65-77d46dc4a397</UserSecretsId>
 	</PropertyGroup>
 
 
@@ -33,12 +34,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.3" />
-		<PackageReference Include="Radzen.Blazor" Version="4.27.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
+		<PackageReference Include="Radzen.Blazor" Version="4.29.8" />
 		<PackageReference Include="Sabatex.Core" Version="2.1.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.1.21" />
 		<PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.4" />
 	</ItemGroup>
 
 

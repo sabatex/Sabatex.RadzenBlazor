@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.Extensions;
+﻿
 using Microsoft.Extensions.DependencyInjection;
 using Radzen;
 using System;
@@ -29,10 +29,10 @@ namespace Sabatex.RadzenBlazor
         }
     
     
-        public static void AddNotNull(this QueryBuilder queryBuilder,  string key,string? value)
-        {
-            if (value != null) queryBuilder.Add(key, value);
-        }
+        //public static void AddNotNull(this QueryBuilder queryBuilder,  string key,string? value)
+        //{
+        //    if (value != null) queryBuilder.Add(key, value);
+        //}
     
     }
 }

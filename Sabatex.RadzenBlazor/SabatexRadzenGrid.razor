@@ -30,7 +30,8 @@
                     Density="Density.Compact"
                     AllowVirtualization=true
                     Style=@gridStyle
-                    RowDoubleClick="@RowDoubleClick">
+                    RowDoubleClick="@RowDoubleClick"
+                    ContextMenu="ContextMenu">
         >
 
 
@@ -45,6 +46,8 @@
     public RenderFragment<TItem?> Buttons { get; set; } = default!;
     [Parameter]
     public ForeginKey? ForeginKey{ get; set; }
+
+
 
     public IEnumerable<TItem> Items => dataCollection.Value;
 
