@@ -7,7 +7,7 @@
 
 
     <RadzenStack Orientation="Orientation.Horizontal" class="rz-py-2">
-        <RadzenButton Text="Add" Icon="add" Click="()=>NavigateToEditPage()" Disabled="IsPageRO" />
+        <RadzenButton class="rz-px-xs-1" Text="Add" Icon="add" Click="()=>NavigateToEditPage()" Disabled="IsPageRO" />
     <RadzenButton Text="Edit" Icon="edit" Click="()=>NavigateToEditPage(SelectedItems?.First()?.Id.ToString())" Disabled=@(IsGridRO || !IsItemSelected)  />
     <RadzenButton Text="Delete" Icon="delete" Click="()=>DeleteButtonClick(CurrentItem)" Disabled=@(IsGridRO || !IsItemSelected)  />
     @if (Buttons != null)

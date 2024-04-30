@@ -23,8 +23,8 @@ public class SabatexRadzenBlazorApiDataAdapter<TKey> : ISabatexRadzenBlazorDataA
 {
     const string nullResponce = "The responece return null";
 
-    private readonly HttpClient httpClient;
-    private readonly Uri baseUri;
+    protected readonly HttpClient httpClient;
+    protected readonly Uri baseUri;
     private readonly ILogger<SabatexRadzenBlazorODataAdapter<TKey>> logger;
     private readonly NavigationManager navigationManager;
 

@@ -1,0 +1,7 @@
+﻿body {
+}
+@media (max-width: 768px) {
+    .rz-button-text {
+        display: none;
+    }
+}
