@@ -1,15 +1,21 @@
 ﻿@using Sabatex.Core
 @typeparam TKey
-@typeparam TItem  where TItem : class, IEntityBase<TKey>
-@inherits SabatexRadzenBlazorBaseDataPage<TKey>
+@typeparam TItem  where TItem : class, IEntityBase<TKey>,new()
+@inherits SabatexRadzenBlazorBaseDataComponent<TKey>
 
 @inject DialogService DialogService
 
 
     <RadzenStack Orientation="Orientation.Horizontal" class="rz-py-2">
-        <RadzenButton class="rz-px-xs-1" Text="Add" Icon="add" Click="()=>NavigateToEditPage()" Disabled="IsPageRO" />
-    <RadzenButton Text="Edit" Icon="edit" Click="()=>NavigateToEditPage(SelectedItems?.First()?.Id.ToString())" Disabled=@(IsGridRO || !IsItemSelected)  />
-    <RadzenButton Text="Delete" Icon="delete" Click="()=>DeleteButtonClick(CurrentItem)" Disabled=@(IsGridRO || !IsItemSelected)  />
+    @if (!IsGridRO)
+    {
+        @if (IsInserted)
+        {
+            <RadzenButton class="rz-px-xs-1" Text="Add" Icon="add" Click="()=>NavigateToEditPage()" Disabled="IsGridRO" />
+        }
+        <RadzenButton class="rz-px-xs-1" Text="Edit" Icon="edit" Click="()=>NavigateToEditPage(SelectedItems?.First()?.Id.ToString())" Disabled=@(IsGridRO || !IsItemSelected)  />
+        <RadzenButton class="rz-px-xs-1" Text="Delete" Icon="delete" Click="()=>DeleteButtonClick(CurrentItem)" Disabled=@(IsGridRO || !IsItemSelected)  />
+    }
     @if (Buttons != null)
     {
         @Buttons(CurrentItem)
@@ -31,7 +37,11 @@
                     AllowVirtualization=true
                     Style=@gridStyle
                     RowDoubleClick="@RowDoubleClick"
-                    ContextMenu="ContextMenu">
+                    ContextMenu="ContextMenu"
+                    EditMode="@(EditMode ?? DataGridEditMode.Single)"
+
+                    
+                    >
         >
 
 
@@ -46,6 +56,22 @@
     public RenderFragment<TItem?> Buttons { get; set; } = default!;
     [Parameter]
     public ForeginKey? ForeginKey{ get; set; }
+    [Parameter]
+    public DataGridEditMode? EditMode { get; set; }
+    [Parameter]
+    public bool? InlineEdit { get; set; }
+
+    /// <summary>
+    /// Support insert to collection
+    /// </summary>
+    [Parameter]
+    public bool IsInserted { get; set; } = true;
+
+
+    [Parameter]
+    public Func<TItem, Task>? OnCreatedRow { get; set; }
+    [Parameter]
+    public Func<TItem, Task>? OnBeforeSave { get; set; }
 
 
 
@@ -59,14 +85,14 @@
     private TItem? CurrentItem => SelectedItems?.First();
 
     string gridStyle = "height:200px";
-    
+
     public virtual string EditPageName { get; set; } = "edit";
 
 
     bool IsItemSelected => SelectedItems?.First() != null;
 
-    
-    
+
+
     protected async Task GridLoadData(LoadDataArgs args)
     {
         IsGridDataLoading = true;
@@ -131,11 +157,25 @@
         }
         IsGridDataLoading = false;
     }
+
+    TItem? itemToInsert;
     public virtual async Task AddButtonClick(MouseEventArgs args)
     {
-        NavigateToEditPage(null);
-        await Task.Yield();
+        if (InlineEdit ?? false)
+        {
+            itemToInsert = new TItem();
+            if (OnCreatedRow != null)
+                await OnCreatedRow(itemToInsert);
+            if (dataCollection.Count == 0) dataCollection.Count++;
+            await grid.InsertRow(itemToInsert);
+
+        }else
+        {
+            NavigateToEditPage(null);
+        }
     }
+
+
     protected virtual string EditPageUri
     {
         get
@@ -180,13 +220,21 @@
         await Task.Yield();
     }
 
-
-    protected virtual async Task EditButtonClick(TItem data)
+    TItem? itemToUpdate;
+    async Task EditButtonClick(TItem data)
     {
+        if (InlineEdit ?? false)
+        {
+            await grid.EditRow(data);
+            itemToUpdate = data;
+        }
+        else
+        {
         if (data is not null)
             NavigateToEditPage(data.Id?.ToString());
-        await Task.Yield();
+        }
     }
+    
     protected virtual async Task DeleteButtonClick(TItem data)
     {
         try
@@ -219,6 +267,48 @@
 
         }
     }
+    
+    async Task SaveButtonClick(TItem data)
+    {
+        if (OnBeforeSave !=null)
+            await OnBeforeSave(data);
+        await grid.UpdateRow(data);
+    }
+    
+    async Task CancelButtonClick(TItem data)
+    {
+        grid.CancelEditRow(data);
+        await grid.Reload();
+        itemToInsert = null;
+        itemToUpdate = null;
+    }
 
+    protected async Task gridRowCreate(TItem item)
+    {
+        var result = await DataAdapter.PostAsync(item);
+        if (grid != null)
+            await grid.Reload();
+        itemToInsert = null;
+        await InvokeAsync(() => { StateHasChanged(); });
+    }
+    protected async Task gridRowUpdate(TItem item)
+    {
+        await DataAdapter.UpdateAsync(item);
+        itemToUpdate = null;
+    }
+    private void GridRefNull()
+    {
+        NotificationService?.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error",
+                Detail = "The grid reference not initialize!"
+            });
+    }
+    protected bool IsGridBusy => itemToInsert != null || itemToUpdate != null;
+    public async Task Reload()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
 
 }

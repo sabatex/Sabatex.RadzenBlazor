@@ -117,7 +117,7 @@ public class SabatexRadzenBlazorApiDataAdapter<TKey> : ISabatexRadzenBlazorDataA
         throw new Exception($"Error Post with status code: {response.StatusCode}");
     }
 
-    public async Task<TItem> GetByIdAsync<TItem>(TKey id, string? expand = null) where TItem : class, IEntityBase<TKey>
+    public async Task<TItem?> GetByIdAsync<TItem>(TKey id, string? expand = null) where TItem : class, IEntityBase<TKey>
     {
         if (id is not null)
             return await GetByIdAsync<TItem>(id.ToString(),expand);
@@ -125,7 +125,7 @@ public class SabatexRadzenBlazorApiDataAdapter<TKey> : ISabatexRadzenBlazorDataA
             throw new ArgumentNullException(nameof(id));
     }
 
-    public async Task<TItem> GetByIdAsync<TItem>(string? id, string? expand = null) where TItem : class, IEntityBase<TKey>
+    public async Task<TItem?> GetByIdAsync<TItem>(string? id, string? expand = null) where TItem : class, IEntityBase<TKey>
     {
         var uri = new Uri(baseUri, $"{typeof(TItem).Name}/{id}");
         //uri = Radzen.ODataExtensions.GetODataUri(uri: uri, filter: null, top: null, skip: null, orderby: null, expand: expand, select: null, count: null);

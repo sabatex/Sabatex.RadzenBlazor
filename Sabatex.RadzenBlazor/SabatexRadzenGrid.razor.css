@@ -1,7 +1,7 @@
-﻿body {
-}
+﻿
 @media (max-width: 768px) {
-    .rz-button-text {
+    .xs-display-none {
         display: none;
     }
+
 }
