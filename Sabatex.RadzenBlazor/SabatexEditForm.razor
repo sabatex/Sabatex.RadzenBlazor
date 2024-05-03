@@ -43,7 +43,7 @@ else
     public TItem? Item { get; set; }
 
     [Parameter]
-    public EventCallback OnBeforeSubmit { get; set; }
+    public EventCallback<TItem> OnBeforeSubmit { get; set; }
 
 
 
@@ -69,7 +69,7 @@ else
 
     protected async Task OnSubmit(TItem item)
     {
-        await OnBeforeSubmit.InvokeAsync();
+        await OnBeforeSubmit.InvokeAsync(item);
 
         SabatexValidationModel<TItem>? result;
 

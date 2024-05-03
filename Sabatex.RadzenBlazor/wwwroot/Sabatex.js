@@ -33,9 +33,14 @@ export const sabatex = {
     },
     localStorageGetItem: function (key) {
         return localStorage.getItem(key);
-    }
+    },
+    getWindowDimensions: function () {
+        return { height: window.height, width: window.height, availHeight: window.innerHeight, availWidth: window.innerWidth };
+    },
 
-
+    isDevice:function isDevice() {
+        return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/i.test(navigator.userAgent);
+        }
 
 }
 

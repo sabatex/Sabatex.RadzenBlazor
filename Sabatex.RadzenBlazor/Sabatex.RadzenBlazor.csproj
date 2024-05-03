@@ -3,7 +3,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Version>3.2.0-alpha15</Version>
+		<Version>3.2.2</Version>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<UserSecretsId>8e1e118a-1604-4f8a-bb65-77d46dc4a397</UserSecretsId>
 	</PropertyGroup>

@@ -12,6 +12,13 @@ namespace Sabatex.RadzenBlazor;
 
 public class SabatexJsInterop : IAsyncDisposable
 {
+    public class WindowDimensions
+    {
+        public int height { get; set; }
+        public int width { get; set; }
+        public int availHeight { get; set; }
+        public int availWidth { get; set; }
+    };
     private readonly Lazy<Task<IJSObjectReference>> moduleTask;
 
     public SabatexJsInterop(IJSRuntime jsRuntime)
@@ -23,12 +30,12 @@ public class SabatexJsInterop : IAsyncDisposable
     public async ValueTask<string> Prompt(string message)
     {
         var module = await moduleTask.Value;
-        return await module.InvokeAsync<string>("showPrompt", message);
+        return await module.InvokeAsync<string>("sabatex.showPrompt", message);
     }
     public async ValueTask FocusElement(string elementReference)
     {
         var module = await moduleTask.Value;
-        await module.InvokeAsync<string>("focusElement", elementReference);
+        await module.InvokeAsync<string>("sabatex.focusElement", elementReference);
     }
 
     public async ValueTask DownloadStringAsFile(string fileName,string text){
@@ -38,16 +45,30 @@ public class SabatexJsInterop : IAsyncDisposable
 
     public async ValueTask<double> GetElementClientHeight(ElementReference element) {
         var module = await moduleTask.Value;
-        return await module.InvokeAsync<double>("getElementClientHeight",element);  
+        return await module.InvokeAsync<double>("sabatex.getElementClientHeight", element);  
     }
    public async ValueTask<double> GetElementOffSetHeight(ElementReference element) {
         var module = await moduleTask.Value;
-        return await module.InvokeAsync<double>("getElementOffSetHeight",element);  
+        return await module.InvokeAsync<double>("sabatex.getElementOffSetHeight", element);  
     }
   public async ValueTask<double> GetAvailHeight(ElementReference element) {
         var module = await moduleTask.Value;
-        return await module.InvokeAsync<double>("getAvailHeight",element);  
+        return await module.InvokeAsync<double>("sabatex.getAvailHeight", element);  
     }
+
+    public async ValueTask<bool> IsMomibileDeviceAsync()
+    {
+        var module = await moduleTask.Value;
+        return await module.InvokeAsync<bool>("sabatex.isDevice");
+    }
+
+    public async ValueTask<WindowDimensions> GetWindowDimensionsAsync()
+    {
+        var module = await moduleTask.Value;
+        return await module.InvokeAsync<WindowDimensions>("sabatex.getWindowDimensions");
+
+    }
+
     public async ValueTask DisposeAsync()
     {
         if (moduleTask.IsValueCreated)
