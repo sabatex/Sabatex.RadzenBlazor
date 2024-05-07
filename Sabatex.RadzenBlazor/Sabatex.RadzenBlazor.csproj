@@ -36,7 +36,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
-		<PackageReference Include="Radzen.Blazor" Version="4.29.8" />
+		<PackageReference Include="Radzen.Blazor" Version="4.31.2" />
 		<PackageReference Include="Sabatex.Core" Version="2.1.0" />
 		<PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.4" />
