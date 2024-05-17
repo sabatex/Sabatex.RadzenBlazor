@@ -78,7 +78,7 @@ else
             if (IsNew ?? false)
                 result = await DataAdapter.PostAsync<TItem>(item);
             else
-                result = await DataAdapter.UpdateAsync<TItem>(Item);
+                result = await DataAdapter.UpdateAsync<TItem>(item);
             if (result == null)
             {
                 NotificationService?.Notify(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = $"Помилка запису", Detail = "Server response null" });

@@ -11,10 +11,11 @@
     {
         @if (IsInserted)
         {
-            <RadzenButton class="rz-px-xs-1" Text="Add" Icon="add" Click="()=>NavigateToEditPage()" Disabled="IsGridRO" />
+            <RadzenButton class="rz-px-xs-1"  Icon="add" Click="()=>NavigateToEditPage()" Disabled="IsGridRO" />
         }
-        <RadzenButton class="rz-px-xs-1" Text="Edit" Icon="edit" Click="()=>NavigateToEditPage(SelectedItems?.First()?.Id.ToString())" Disabled=@(IsGridRO || !IsItemSelected)  />
-        <RadzenButton class="rz-px-xs-1" Text="Delete" Icon="delete" Click="()=>DeleteButtonClick(CurrentItem)" Disabled=@(IsGridRO || !IsItemSelected)  />
+        <RadzenButton class="rz-px-xs-1" Icon="edit" Click="()=>NavigateToEditPage(SelectedItems?.First()?.Id.ToString())" Disabled=@(IsGridRO || !IsItemSelected)  />
+        <RadzenButton class="rz-px-xs-1" Icon="delete" Click="()=>DeleteButtonClick(CurrentItem)" Disabled=@(IsGridRO || !IsItemSelected)  />
+        <RadzenButton class="rz-px-xs-1" Icon="refresh" Click="async ()=>await RefreshAsync()" />
     }
     @if (Buttons != null)
     {
@@ -60,18 +61,22 @@
     public DataGridEditMode? EditMode { get; set; }
     [Parameter]
     public bool? InlineEdit { get; set; }
+    [Parameter]
+    public bool DoubleClickRowEdit { get; set; } = true;
+
 
     /// <summary>
     /// Support insert to collection
     /// </summary>
     [Parameter]
     public bool IsInserted { get; set; } = true;
-
-
     [Parameter]
-    public Func<TItem, Task>? OnCreatedRow { get; set; }
+    public EventCallback<TItem> OnCreatedRow { get; set; }
     [Parameter]
-    public Func<TItem, Task>? OnBeforeSave { get; set; }
+    public EventCallback<TItem> OnBeforeSave { get; set; }
+    [Parameter]
+    public EventCallback<TItem> OnRowClick { get; set; }
+
 
 
 
@@ -164,8 +169,7 @@
         if (InlineEdit ?? false)
         {
             itemToInsert = new TItem();
-            if (OnCreatedRow != null)
-                await OnCreatedRow(itemToInsert);
+            await OnCreatedRow.InvokeAsync(itemToInsert);
             if (dataCollection.Count == 0) dataCollection.Count++;
             await grid.InsertRow(itemToInsert);
 
@@ -210,10 +214,16 @@
         NavigationManager.NavigateTo(uri);
     }
 
-    protected virtual async Task RowDoubleClick(DataGridRowMouseEventArgs<TItem> args)
+    async Task RowDoubleClick(DataGridRowMouseEventArgs<TItem> args)
     {
-        if (args.Data is not null)
-            NavigateToEditPage(args.Data?.Id?.ToString());
+        if (args.Data != null)
+        {
+            if (DoubleClickRowEdit)
+                NavigateToEditPage(args.Data?.Id?.ToString());
+            else
+                await OnRowClick.InvokeAsync(args.Data);
+        }
+
         else
             throw new NullReferenceException("The args.Data is null");
 
@@ -230,12 +240,12 @@
         }
         else
         {
-        if (data is not null)
-            NavigateToEditPage(data.Id?.ToString());
+            if (data is not null)
+                NavigateToEditPage(data.Id?.ToString());
         }
     }
-    
-    protected virtual async Task DeleteButtonClick(TItem data)
+
+    async Task DeleteButtonClick(TItem data)
     {
         try
         {
@@ -267,14 +277,13 @@
 
         }
     }
-    
+
     async Task SaveButtonClick(TItem data)
     {
-        if (OnBeforeSave !=null)
-            await OnBeforeSave(data);
+        await OnBeforeSave.InvokeAsync(data);
         await grid.UpdateRow(data);
     }
-    
+
     async Task CancelButtonClick(TItem data)
     {
         grid.CancelEditRow(data);
@@ -311,4 +320,8 @@
         await InvokeAsync(StateHasChanged);
     }
 
+    public async Task RefreshAsync()
+    {
+        await grid.Reload();
+    }
 }
