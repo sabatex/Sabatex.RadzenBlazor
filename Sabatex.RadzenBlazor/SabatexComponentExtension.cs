@@ -15,6 +15,10 @@ namespace Sabatex.RadzenBlazor
         {
             return (await stateProvider.GetAuthenticationStateAsync())?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
         }
+        public static async Task<string> GetUserNameAsync(this AuthenticationStateProvider stateProvider)
+        {
+            return (await stateProvider.GetAuthenticationStateAsync())?.User.Identity?.Name ?? string.Empty;
+        }
 
         public static async Task<bool> UserIsInRore(this AuthenticationStateProvider stateProvider,string role)
         {
