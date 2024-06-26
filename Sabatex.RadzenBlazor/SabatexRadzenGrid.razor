@@ -14,7 +14,10 @@
             <RadzenButton class="rz-px-xs-1"  Icon="add" Click="()=>NavigateToEditPage()" Disabled="IsGridRO" />
         }
         <RadzenButton class="rz-px-xs-1" Icon="edit" Click="()=>NavigateToEditPage(SelectedItems?.First()?.Id.ToString())" Disabled=@(IsGridRO || !IsItemSelected)  />
-        <RadzenButton class="rz-px-xs-1" Icon="delete" Click="()=>DeleteButtonClick(CurrentItem)" Disabled=@(IsGridRO || !IsItemSelected)  />
+        @if (IsDeleted)
+        {
+            <RadzenButton class="rz-px-xs-1" Icon="delete" Click="()=>DeleteButtonClick(CurrentItem)" Disabled=@(IsGridRO || !IsItemSelected)  />
+        }
         <RadzenButton class="rz-px-xs-1" Icon="refresh" Click="async ()=>await RefreshAsync()" />
     }
     @if (Buttons != null)
@@ -70,6 +73,15 @@
     /// </summary>
     [Parameter]
     public bool IsInserted { get; set; } = true;
+
+    /// <summary>
+    /// Support delete item
+    /// </summary>
+    [Parameter]
+    public bool IsDeleted { get; set; } = true;
+
+
+
     [Parameter]
     public EventCallback<TItem> OnCreatedRow { get; set; }
     [Parameter]
