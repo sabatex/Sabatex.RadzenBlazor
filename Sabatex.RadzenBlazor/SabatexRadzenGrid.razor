@@ -5,6 +5,7 @@
 
 @inject DialogService DialogService
 
+<div style="display:flex;flex-direction:column;height:100%">
 
     <RadzenStack Orientation="Orientation.Horizontal" class="rz-py-2">
     @if (!IsGridRO)
@@ -43,15 +44,13 @@
                     RowDoubleClick="@RowDoubleClick"
                     ContextMenu="ContextMenu"
                     EditMode="@(EditMode ?? DataGridEditMode.Single)"
-
-                    
                     >
         >
 
 
     </RadzenDataGrid>
 
-
+</div>
 
 @code {
     [Parameter]
@@ -101,7 +100,7 @@
     protected IList<TItem>? SelectedItems;
     private TItem? CurrentItem => SelectedItems?.First();
 
-    string gridStyle = "height:200px";
+    string gridStyle = "height:100%";
 
     public virtual string EditPageName { get; set; } = "edit";
 
