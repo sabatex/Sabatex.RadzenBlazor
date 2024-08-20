@@ -2,6 +2,7 @@
 @typeparam TKey
 @typeparam TItem  where TItem : class, IEntityBase<TKey>,new()
 @inherits SabatexRadzenBlazorBaseDataComponent<TKey>
+@inject TooltipService tooltipService
 
 @inject DialogService DialogService
 
@@ -12,7 +13,7 @@
     {
         @if (IsInserted)
         {
-            <RadzenButton class="rz-px-xs-1"  Icon="add" Click="()=>NavigateToEditPage()" Disabled="IsGridRO" />
+                <RadzenButton class="rz-px-xs-1" Icon="add" Click="()=>NavigateToEditPage()" Disabled="IsGridRO" MouseEnter="@(args => tooltipService.Open(args, "Add new node for current client.", null))" />
         }
         <RadzenButton class="rz-px-xs-1" Icon="edit" Click="()=>NavigateToEditPage(SelectedItems?.First()?.Id.ToString())" Disabled=@(IsGridRO || !IsItemSelected)  />
         @if (IsDeleted)
