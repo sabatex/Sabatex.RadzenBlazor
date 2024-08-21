@@ -1,15 +1,27 @@
 ﻿@using Sabatex.Core
 @typeparam TKey
-@typeparam TItem  where TItem : class, IEntityBase<TKey>
-@inherits SabatexRadzenBlazorBaseDataPage<TKey>
+@typeparam TItem  where TItem : class, IEntityBase<TKey>,new()
+@inherits SabatexRadzenBlazorBaseDataComponent<TKey>
+@inject TooltipService tooltipService
 
 @inject DialogService DialogService
 
+<div style="display:flex;flex-direction:column;height:100%">
 
     <RadzenStack Orientation="Orientation.Horizontal" class="rz-py-2">
-        <RadzenButton Text="Add" Icon="add" Click="()=>NavigateToEditPage()" Disabled="IsPageRO" />
-    <RadzenButton Text="Edit" Icon="edit" Click="()=>NavigateToEditPage(SelectedItems?.First()?.Id.ToString())" Disabled=@(IsGridRO || !IsItemSelected)  />
-    <RadzenButton Text="Delete" Icon="delete" Click="()=>DeleteButtonClick(CurrentItem)" Disabled=@(IsGridRO || !IsItemSelected)  />
+    @if (!IsGridRO)
+    {
+        @if (IsInserted)
+        {
+                <RadzenButton class="rz-px-xs-1" Icon="add" Click="()=>NavigateToEditPage()" Disabled="IsGridRO" MouseEnter="@(args => tooltipService.Open(args, "Add new node for current client.", null))" />
+        }
+        <RadzenButton class="rz-px-xs-1" Icon="edit" Click="()=>NavigateToEditPage(SelectedItems?.First()?.Id.ToString())" Disabled=@(IsGridRO || !IsItemSelected)  />
+        @if (IsDeleted)
+        {
+            <RadzenButton class="rz-px-xs-1" Icon="delete" Click="()=>DeleteButtonClick(CurrentItem)" Disabled=@(IsGridRO || !IsItemSelected)  />
+        }
+        <RadzenButton class="rz-px-xs-1" Icon="refresh" Click="async ()=>await RefreshAsync()" />
+    }
     @if (Buttons != null)
     {
         @Buttons(CurrentItem)
@@ -31,13 +43,15 @@
                     AllowVirtualization=true
                     Style=@gridStyle
                     RowDoubleClick="@RowDoubleClick"
-                    ContextMenu="ContextMenu">
+                    ContextMenu="ContextMenu"
+                    EditMode="@(EditMode ?? DataGridEditMode.Single)"
+                    >
         >
 
 
     </RadzenDataGrid>
 
-
+</div>
 
 @code {
     [Parameter]
@@ -46,6 +60,35 @@
     public RenderFragment<TItem?> Buttons { get; set; } = default!;
     [Parameter]
     public ForeginKey? ForeginKey{ get; set; }
+    [Parameter]
+    public DataGridEditMode? EditMode { get; set; }
+    [Parameter]
+    public bool? InlineEdit { get; set; }
+    [Parameter]
+    public bool DoubleClickRowEdit { get; set; } = true;
+
+
+    /// <summary>
+    /// Support insert to collection
+    /// </summary>
+    [Parameter]
+    public bool IsInserted { get; set; } = true;
+
+    /// <summary>
+    /// Support delete item
+    /// </summary>
+    [Parameter]
+    public bool IsDeleted { get; set; } = true;
+
+
+
+    [Parameter]
+    public EventCallback<TItem> OnCreatedRow { get; set; }
+    [Parameter]
+    public EventCallback<TItem> OnBeforeSave { get; set; }
+    [Parameter]
+    public EventCallback<TItem> OnRowClick { get; set; }
+
 
 
 
@@ -58,15 +101,15 @@
     protected IList<TItem>? SelectedItems;
     private TItem? CurrentItem => SelectedItems?.First();
 
-    string gridStyle = "height:200px";
-    
+    string gridStyle = "height:100%";
+
     public virtual string EditPageName { get; set; } = "edit";
 
 
     bool IsItemSelected => SelectedItems?.First() != null;
 
-    
-    
+
+
     protected async Task GridLoadData(LoadDataArgs args)
     {
         IsGridDataLoading = true;
@@ -131,11 +174,24 @@
         }
         IsGridDataLoading = false;
     }
+
+    TItem? itemToInsert;
     public virtual async Task AddButtonClick(MouseEventArgs args)
     {
-        NavigateToEditPage(null);
-        await Task.Yield();
+        if (InlineEdit ?? false)
+        {
+            itemToInsert = new TItem();
+            await OnCreatedRow.InvokeAsync(itemToInsert);
+            if (dataCollection.Count == 0) dataCollection.Count++;
+            await grid.InsertRow(itemToInsert);
+
+        }else
+        {
+            NavigateToEditPage(null);
+        }
     }
+
+
     protected virtual string EditPageUri
     {
         get
@@ -170,24 +226,38 @@
         NavigationManager.NavigateTo(uri);
     }
 
-    protected virtual async Task RowDoubleClick(DataGridRowMouseEventArgs<TItem> args)
+    async Task RowDoubleClick(DataGridRowMouseEventArgs<TItem> args)
     {
-        if (args.Data is not null)
-            NavigateToEditPage(args.Data?.Id?.ToString());
+        if (args.Data != null)
+        {
+            if (DoubleClickRowEdit)
+                NavigateToEditPage(args.Data?.Id?.ToString());
+            else
+                await OnRowClick.InvokeAsync(args.Data);
+        }
+
         else
             throw new NullReferenceException("The args.Data is null");
 
         await Task.Yield();
     }
 
-
-    protected virtual async Task EditButtonClick(TItem data)
+    TItem? itemToUpdate;
+    async Task EditButtonClick(TItem data)
     {
-        if (data is not null)
-            NavigateToEditPage(data.Id?.ToString());
-        await Task.Yield();
+        if (InlineEdit ?? false)
+        {
+            await grid.EditRow(data);
+            itemToUpdate = data;
+        }
+        else
+        {
+            if (data is not null)
+                NavigateToEditPage(data.Id?.ToString());
+        }
     }
-    protected virtual async Task DeleteButtonClick(TItem data)
+
+    async Task DeleteButtonClick(TItem data)
     {
         try
         {
@@ -220,5 +290,50 @@
         }
     }
 
+    async Task SaveButtonClick(TItem data)
+    {
+        await OnBeforeSave.InvokeAsync(data);
+        await grid.UpdateRow(data);
+    }
 
+    async Task CancelButtonClick(TItem data)
+    {
+        grid.CancelEditRow(data);
+        await grid.Reload();
+        itemToInsert = null;
+        itemToUpdate = null;
+    }
+
+    protected async Task gridRowCreate(TItem item)
+    {
+        var result = await DataAdapter.PostAsync(item);
+        if (grid != null)
+            await grid.Reload();
+        itemToInsert = null;
+        await InvokeAsync(() => { StateHasChanged(); });
+    }
+    protected async Task gridRowUpdate(TItem item)
+    {
+        await DataAdapter.UpdateAsync(item);
+        itemToUpdate = null;
+    }
+    private void GridRefNull()
+    {
+        NotificationService?.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Error",
+                Detail = "The grid reference not initialize!"
+            });
+    }
+    protected bool IsGridBusy => itemToInsert != null || itemToUpdate != null;
+    public async Task Reload()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task RefreshAsync()
+    {
+        await grid.Reload();
+    }
 }
