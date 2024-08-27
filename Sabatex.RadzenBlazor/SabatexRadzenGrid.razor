@@ -15,7 +15,7 @@
         {
                 <RadzenButton class="rz-px-xs-1" Icon="add" Click="()=>NavigateToEditPage()" Disabled="IsGridRO" MouseEnter="@(args => tooltipService.Open(args, "Add new node for current client.", null))" />
         }
-        <RadzenButton class="rz-px-xs-1" Icon="edit" Click="()=>NavigateToEditPage(SelectedItems?.First()?.Id.ToString())" Disabled=@(IsGridRO || !IsItemSelected)  />
+        <RadzenButton class="rz-px-xs-1" Icon="edit" Click="()=>NavigateToEditPage(SelectedItems?.First()?.Id?.ToString())" Disabled=@(IsGridRO || !IsItemSelected)  />
         @if (IsDeleted)
         {
             <RadzenButton class="rz-px-xs-1" Icon="delete" Click="()=>DeleteButtonClick(CurrentItem)" Disabled=@(IsGridRO || !IsItemSelected)  />
@@ -257,8 +257,17 @@
         }
     }
 
-    async Task DeleteButtonClick(TItem data)
+
+
+
+    async Task DeleteButtonClick(TItem? data)
     {
+        if (data == null)
+        {
+            throw new ArgumentNullException(nameof(data));
+        }
+
+
         try
         {
             if (DialogService == null)

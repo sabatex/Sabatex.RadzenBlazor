@@ -24,20 +24,7 @@ public interface ISabatexRadzenBlazorDataAdapter<TKey>
 
 public record struct  FieldDescriptor(string Name,Type FieldType,string operation=" or ",int priority = 0,string? value=null);
 //public record ForeginKey(string Name,string Id);
-public class ForeginKey
-{
-    public string Name { get; set; }
-    public string Id { get; set; }
-    public ForeginKey(string name, string id)
-    {
-        Name = name;
-        Id = id;
-    }
-    public ForeginKey()
-    {
-        
-    }
-}
+public record ForeginKey(string Name, string Id);
 
 public record SabatexValidationModel<TItem>(TItem? Result, Dictionary<string, List<string>>? Errors=null);
 
