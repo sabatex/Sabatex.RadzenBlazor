@@ -13,13 +13,15 @@ namespace Sabatex.RadzenBlazor
     {
         public static IServiceCollection AddSabatexRadzenBlazor(this IServiceCollection services) 
         {
-            services.AddScoped<DialogService>();
-            services.AddScoped<NotificationService>();
-            services.AddScoped<TooltipService>();
-            services.AddScoped<ContextMenuService>();
+            services.AddRadzenComponents();
             services.AddScoped<SabatexJsInterop>();
             services.AddSingleton<SabatexBlazorAppState>();
             return services;
+        }
+        public static IServiceCollection AddSabatexRadzenBlazor<TPWAPush>(this IServiceCollection services) where TPWAPush :class, IPWAPush
+        {
+            services.AddScoped<IPWAPush, TPWAPush>();
+            return services.AddSabatexRadzenBlazor();
         }
 
         public static IServiceCollection AddSabatexRadzenBlazor<TDataAdapter,TKey>(this IServiceCollection services) where TDataAdapter : class, ISabatexRadzenBlazorDataAdapter<TKey>

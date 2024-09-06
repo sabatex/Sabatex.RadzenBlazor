@@ -1,6 +1,4 @@
-﻿
-
-export const sabatex = {
+﻿export const sabatex = {
     downloadStrigAsFile: function (fileName, content) {
         let link = document.createElement("a");
         link.download = fileName;
@@ -72,7 +70,71 @@ export const sabatex = {
 
     }
 
+}
+
+export class PWAPushHandler {
+    endpoint;
+    p256dh;
+    auth;
+
+    arrayBufferToBase64(buffer) {
+        // https://stackoverflow.com/a/9458996
+        var binary = '';
+        var bytes = new Uint8Array(buffer);
+        var len = bytes.byteLength;
+        for (var i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
+    }
 
 
+    constructor(subscription) {
+        this.endpoint = subscription.endpoint;
+        this.p256dh = this.arrayBufferToBase64(subscription.getKey('p256dh'));
+        this.auth = this.arrayBufferToBase64(subscription.getKey('auth'));
+    }
+}
+
+
+export const sabatexPWAPush = {
+    getSubscription: async function () {
+        const worker = await navigator.serviceWorker.getRegistration();
+        const subscription = await worker.pushManager.getSubscription();
+        if (!subscription) return null;
+        return new PWAPushHandler(subscription);
+    },
+
+    subscribe: async function (cert) {
+        const worker = await navigator.serviceWorker.getRegistration();
+        try {
+            const subscription = await worker.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: cert
+            });
+            if (!subscription) return null;
+            return new PWAPushHandler(subscription);
+
+        } catch (error) {
+            if (error.name === 'NotAllowedError') {
+                return null;
+            }
+            throw error;
+        }
+    },
+
+    unsubscribe: async function () {
+        const worker = await navigator.serviceWorker.getRegistration();
+        let subscription = await worker.pushManager.getSubscription();
+        try {
+            await subscribtion.unsubscribe();
+            return true;
+        }
+        catch (e) {
+            console.error('error {e}');
+            return false;
+        }
+    }
 
 }
+
