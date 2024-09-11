@@ -1,7 +1,18 @@
 ﻿@page "/"
+@inject HttpClient HttpClient
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+@body
 
-Welcome to your new app.
+@code{
+    private MarkupString? body;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var markDown = await HttpClient.GetStringAsync("docs/GetStarted.md");
+        body = new MarkupString(Markdig.Markdown.ToHtml(markDown));
+    }
+
+}
