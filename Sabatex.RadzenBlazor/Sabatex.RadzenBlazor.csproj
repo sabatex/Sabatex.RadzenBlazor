@@ -3,7 +3,13 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Version>5.1.6</Version>
+		<Version>5.1.10</Version>
+		<Copyright>Sabatex</Copyright>
+		<Authors>Serhiy Lakas</Authors>
+		<Title>Extend Radzen Blazor Components</Title>
+		<Description>Extend  radzen blazor components. Fix Layot для SSR mode.Add Generic data adapter for OData or Api. Added extended DataGrid with nawigations buttons. Add universal edit form with buttons Save,Cancel ...    </Description>
+		<PackageTags>update component SabatexEnumDropDown </PackageTags>
+		<RepositoryUrl>https://github.com/sabatex/Sabatex.RadzenBlazor</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<UserSecretsId>8e1e118a-1604-4f8a-bb65-77d46dc4a397</UserSecretsId>
 	</PropertyGroup>
@@ -36,7 +42,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.8" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
-		<PackageReference Include="Radzen.Blazor" Version="5.1.6" />
+		<PackageReference Include="Radzen.Blazor" Version="5.1.10" />
 		<PackageReference Include="Sabatex.Core" Version="2.1.0" />
 		<PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
@@ -45,11 +51,14 @@
 
 
 	<ItemGroup>
-		<Content Update="EnumDropDown.razor">
+		<Content Update="SabatexEnumDropDown.razor">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		</Content>
 		<Content Update="wwwroot\Sabatex.RadzenBlazor.js">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
+
+
+
 </Project>

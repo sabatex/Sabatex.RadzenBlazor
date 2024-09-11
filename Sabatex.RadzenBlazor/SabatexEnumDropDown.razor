@@ -1,0 +1,53 @@
+﻿@using System.Reflection;
+@using System.ComponentModel.DataAnnotations;
+@typeparam TEnum
+
+<RadzenDropDown @bind-Value="Value"
+                Data="@collection"
+                ValueProperty="Key"
+                TextProperty="Value"
+                Placeholder="@Placeholder"
+                Style="width:100%"
+                AllowClear="@isNullable"
+                Change="async (value) => await ValueChanged.InvokeAsync((TEnum?)value)" />
+
+    
+@code
+{
+    [Parameter]
+    public EventCallback<TEnum?> ValueChanged { get; set; }
+
+    [Parameter]
+    public TEnum? Value { get; set; }
+
+    [Parameter]
+    public string Placeholder { get; set; } = default!;
+
+
+    bool isNullable => Nullable.GetUnderlyingType(typeof(TEnum)) == null ? false : true;
+
+    IEnumerable<KeyValuePair<object?, string>>? collection;
+
+    private IEnumerable<KeyValuePair<object?, string>> EnumAsKeyValuePair()
+    {
+        var enumType = Nullable.GetUnderlyingType(typeof(TEnum));
+        foreach (var item in Enum.GetValues(enumType == null ? typeof(TEnum) : enumType))
+        {
+            yield return new KeyValuePair<object?, string>(item, ((Enum)item).GetDisplayDescription());
+        }
+
+
+     }
+
+    
+
+    protected override void OnInitialized()
+    {
+
+        base.OnInitialized();
+        collection = EnumAsKeyValuePair();
+ 
+    }
+}
+ 
+
