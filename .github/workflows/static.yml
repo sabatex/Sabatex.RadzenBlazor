@@ -20,8 +20,8 @@ jobs:
       run : ls -l -R
        
     # changes the base-tag in index.html from '/' to 'BlazorGitHubPagesDemo' to match GitHub Pages repository subdirectory
-    - name: Change base-tag in index.html from / to Sabatex_RadzenBlazor_Demo
-      run: sed -i 's/<base href="\/" \/>/<base href="\/Sabatex_RadzenBlazor_Demo\/" \/>/g' Sabatex.RadzenBlazor.Demo/wwwroot/index.html
+    - name: Change base-tag in index.html from / to Sabatex.RadzenBlazor
+      run: sed -i 's/<base href="\/" \/>/<base href="\/Sabatex.RadzenBlazor\/" \/>/g' Sabatex.RadzenBlazor.Demo/wwwroot/index.html
 
     - name: Publish app
       run: dotnet publish  Sabatex.RadzenBlazor.Demo/Sabatex.RadzenBlazor.Demo.csproj  -c Release
