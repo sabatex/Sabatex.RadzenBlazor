@@ -8,7 +8,9 @@ on:
     branches: [ master ]
     paths:
       - 'Sabatex.RadzenBlazor.Demo/Sabatex.RadzenBlazor.Demo.csproj'
-
+permissions: 
+  contents: write
+  
 jobs:
   build:
     runs-on: ubuntu-latest
