@@ -11,8 +11,14 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        var markDown = await HttpClient.GetStringAsync("docs/GetStarted.md");
-        body = new MarkupString(Markdig.Markdown.ToHtml(markDown));
+        try
+        {
+            var markDown = await HttpClient.GetStringAsync("Sabatex.RadzenBlazor/docs/GetStarted.md");
+            body = new MarkupString(Markdig.Markdown.ToHtml(markDown));
+        }catch(Exception e)
+        {
+            body = new MarkupString(e.Message);
+        }
     }
 
 }
