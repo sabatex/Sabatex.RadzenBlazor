@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Version>5.3.6</Version>
+		<Version>9.0.0</Version>
 		<Copyright>Sabatex</Copyright>
 		<Authors>Serhiy Lakas</Authors>
 		<Title>Extend Radzen Blazor Components</Title>
-		<Description>Extend  radzen blazor components. Fix Layot для SSR mode.Add Generic data adapter for OData or Api. Added extended DataGrid with nawigations buttons. Add universal edit form with buttons Save,Cancel ...    </Description>
-		<PackageTags>update RadzenBlazor tp 5.3.5 </PackageTags>
+		<Description></Description>
+		<PackageTags>#Blazor</PackageTags>
 		<RepositoryUrl>https://github.com/sabatex/Sabatex.RadzenBlazor</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<UserSecretsId>8e1e118a-1604-4f8a-bb65-77d46dc4a397</UserSecretsId>
@@ -40,13 +40,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.11" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.1" />
-		<PackageReference Include="Radzen.Blazor" Version="5.6.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.0" />
+		<PackageReference Include="Radzen.Blazor" Version="5.6.7" />
 		<PackageReference Include="Sabatex.Core" Version="2.1.0" />
-		<PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.11" />
-		<PackageReference Include="System.Text.Json" Version="8.0.5" />
+		<PackageReference Include="System.Text.Encodings.Web" Version="9.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
+		<PackageReference Include="System.Text.Json" Version="9.0.0" />
 	</ItemGroup>
 
 
