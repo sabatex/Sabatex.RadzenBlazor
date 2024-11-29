@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+	<Version>9.0.0-alpha1</Version>
+	<Copyright>Serhiy Lakas</Copyright>
+	<Authors>Serhiy Lakas</Authors>
+	<Title>Blazor Account localized UK (Ukraine)</Title>
+	<Description>Part localized Blazor Account</Description>
+	<PackageTags>#Blazor #Identity</PackageTags>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<RepositoryUrl>https://github.com/sabatex/Sabatex.RadzenBlazor</RepositoryUrl>
+	<PackageReadmeFile>Readme.md</PackageReadmeFile>
+
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
+	  <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Components\Account\Pages\AccessDenied.uk.resx" CopyToOutputDirectory="PreserveNewest">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AccessDenied.uk.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Components\Account\Pages\ConfirmEmail.uk.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConfirmEmail.uk.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+	  <None Include="../Readme.md" Pack="true" PackagePath="\" />
+   </ItemGroup>
+
+</Project>
