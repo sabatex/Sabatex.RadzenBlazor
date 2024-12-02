@@ -39,6 +39,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ConfirmEmail.uk.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Components\Account\Shared\ExternalLoginPicker.uk.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExternalLoginPicker.uk.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
