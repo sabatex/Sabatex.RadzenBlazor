@@ -9,9 +9,9 @@
                 Placeholder="@Placeholder"
                 Style="width:100%"
                 AllowClear="@isNullable"
-                Change="async (value) => await ValueChanged.InvokeAsync((TEnum?)value)" />
+                Change="async (value) => {await ValueChanged.InvokeAsync((TEnum?)value); await Change.InvokeAsync((TEnum?)value);}" />
 
-    
+
 @code
 {
     [Parameter]
@@ -22,6 +22,9 @@
 
     [Parameter]
     public string Placeholder { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<TEnum?> Change { get; set; }
 
 
     bool isNullable => Nullable.GetUnderlyingType(typeof(TEnum)) == null ? false : true;

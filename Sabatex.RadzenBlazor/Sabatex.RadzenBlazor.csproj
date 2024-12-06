@@ -17,11 +17,18 @@
 
     <ItemGroup>
  		<None Include="../README.md" Pack="true" PackagePath="\" />
+ 		<None Include="appsettings.json" Pack="false">
+ 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+ 		</None>
 		<Compile Remove="bin\**" />
 		<Content Remove="bin\**" />
 		<EmbeddedResource Remove="bin\**" />
 		<None Remove="bin\**" />
 	</ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="appsettings.json" />
+    </ItemGroup>
 
 
 	<ItemGroup>
@@ -30,7 +37,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.0" />
-		<PackageReference Include="Radzen.Blazor" Version="5.6.7" />
+		<PackageReference Include="Radzen.Blazor" Version="5.6.11" />
 		<PackageReference Include="Sabatex.Core" Version="9.0.0-rc1" />
 		<PackageReference Include="System.Text.Encodings.Web" Version="9.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />

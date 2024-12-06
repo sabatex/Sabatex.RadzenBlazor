@@ -45,15 +45,15 @@ namespace Microsoft.AspNetCore.Routing
                 return TypedResults.Challenge(properties, [provider]);
             });
 
-            accountGroup.MapPost("/Logout", async (
-                ClaimsPrincipal user,
-                SignInManager<IdentityUser> signInManager//,
-                /*[FromForm] string returnUrl*/) =>
-            {
-                await signInManager.SignOutAsync();
-                var returnUrl = "";
-                return TypedResults.LocalRedirect($"~/{returnUrl}");
-            });
+            //accountGroup.MapPost("/Logout", async (
+            //    ClaimsPrincipal user,
+            //    SignInManager<IdentityUser> signInManager,
+            //    [FromForm] string returnUrl) =>
+            //{
+            //    await signInManager.SignOutAsync();
+            //    //var returnUrl = "";
+            //    return TypedResults.LocalRedirect($"~/{returnUrl}");
+            //});
 
             var manageGroup = accountGroup.MapGroup("/Manage").RequireAuthorization();
 

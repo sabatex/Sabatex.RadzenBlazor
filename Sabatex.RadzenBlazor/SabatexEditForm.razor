@@ -10,8 +10,12 @@ else
 {
     <RadzenTemplateForm Data="@Item" TItem="TItem" Submit="OnSubmit">
         <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Start" Gap="1rem" Class="rz-mt-8 rz-mb-4">
-            <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Small" Icon="save" Text="Save" />
+            <RadzenButton ButtonType="ButtonType.Submit" Size="ButtonSize.Small" Icon="save" Text="Save" Disabled="IsReadOnly"/>
             <RadzenButton ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Small" Icon="cancel" Text="Cancel" Click="@Cancel" />
+            @if (Buttons != null)
+            {
+                @Buttons
+            }
         </RadzenStack>
        <RadzenRow>
              <DataAnnotationsValidator />
@@ -45,7 +49,11 @@ else
     [Parameter]
     public EventCallback<TItem> OnBeforeSubmit { get; set; }
 
+    [Parameter]
+    public bool IsReadOnly { get; set; }
 
+    [Parameter]
+    public RenderFragment Buttons { get; set; } = default!;
 
 
     protected ValidationSummary? ValidationSummary;

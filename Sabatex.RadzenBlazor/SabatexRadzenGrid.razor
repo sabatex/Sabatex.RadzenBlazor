@@ -10,42 +10,43 @@
 
     <RadzenStack Orientation="Orientation.Horizontal" class="rz-py-2">
     @if (!IsGridRO)
-    {
-        @if (IsInserted)
         {
+            @if (IsInserted)
+            {
                 <RadzenButton class="rz-px-xs-1" Icon="add" Click="()=>NavigateToEditPage()" Disabled="IsGridRO" MouseEnter="@(args => tooltipService.Open(args, "Add new node for current client.", null))" />
+            }
+            <RadzenButton class="rz-px-xs-1" Icon="edit" Click="()=>NavigateToEditPage(SelectedItems?.First()?.Id?.ToString())" Disabled=@(IsGridRO || !IsItemSelected)  />
+            @if (IsDeleted)
+            {
+                <RadzenButton class="rz-px-xs-1" Icon="delete" Click="()=>DeleteButtonClick(CurrentItem)" Disabled=@(IsGridRO || !IsItemSelected)  />
+            }
+            <RadzenButton class="rz-px-xs-1" Icon="refresh" Click="async ()=>await RefreshAsync()" />
         }
-        <RadzenButton class="rz-px-xs-1" Icon="edit" Click="()=>NavigateToEditPage(SelectedItems?.First()?.Id?.ToString())" Disabled=@(IsGridRO || !IsItemSelected)  />
-        @if (IsDeleted)
+        @if (Buttons != null)
         {
-            <RadzenButton class="rz-px-xs-1" Icon="delete" Click="()=>DeleteButtonClick(CurrentItem)" Disabled=@(IsGridRO || !IsItemSelected)  />
+            @Buttons(CurrentItem)
         }
-        <RadzenButton class="rz-px-xs-1" Icon="refresh" Click="async ()=>await RefreshAsync()" />
-    }
-    @if (Buttons != null)
-    {
-        @Buttons(CurrentItem)
-    }
 
     </RadzenStack>
     <RadzenDataGrid TItem="TItem"
-                    Columns="Columns"
-                    @ref="grid"
-                    Data="@dataCollection.Value"
-                    Count="@dataCollection.Count"
-                    LoadData="@GridLoadData"
-                    IsLoading="@IsGridDataLoading"
-                    AllowFiltering="true"
-                    AllowSorting="true"
-                    SelectionMode="DataGridSelectionMode.Single"
-                    @bind-Value=@SelectedItems
-                    Density="Density.Compact"
-                    AllowVirtualization=true
-                    Style=@gridStyle
-                    RowDoubleClick="@RowDoubleClick"
-                    ContextMenu="ContextMenu"
-                    EditMode="@(EditMode ?? DataGridEditMode.Single)"
-                    >
+    Columns="Columns"
+    @ref="grid"
+    Data="@dataCollection.Value"
+    Count="@dataCollection.Count"
+    LoadData="@GridLoadData"
+    IsLoading="@IsGridDataLoading"
+    AllowFiltering="true"
+    AllowSorting="true"
+    SelectionMode="DataGridSelectionMode.Single"
+    @bind-Value=@SelectedItems
+    Density="Density.Compact"
+    AllowVirtualization=true
+    Style=@gridStyle
+    RowDoubleClick="@RowDoubleClick"
+    ContextMenu="ContextMenu"
+    CellRender="@CellRender"
+    EditMode="@(EditMode ?? DataGridEditMode.Single)"
+    >
         >
 
 
@@ -66,8 +67,8 @@
     public bool? InlineEdit { get; set; }
     [Parameter]
     public bool DoubleClickRowEdit { get; set; } = true;
-
-
+    [Parameter]
+    public Action<DataGridCellRenderEventArgs<TItem>>? CellRender { get; set; }
     /// <summary>
     /// Support insert to collection
     /// </summary>
@@ -80,7 +81,7 @@
     [Parameter]
     public bool IsDeleted { get; set; } = true;
 
-
+    public bool IsEditRowState => itemToInsert != null;
 
     [Parameter]
     public EventCallback<TItem> OnCreatedRow { get; set; }
@@ -137,7 +138,6 @@
                 }
                 filter = filterBuilder.ToString();
             }
-
 
             if (ForeginKey != null)
             {
