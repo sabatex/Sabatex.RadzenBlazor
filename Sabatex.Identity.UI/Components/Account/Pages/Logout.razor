@@ -15,14 +15,15 @@
     <div>
     <form method="post" @onsubmit="OnSubmitAsync" @formname="logout">
         <AntiforgeryToken />
-        <input type="hidden" name="ReturnUrl" value="" />
+        <input type="hidden" name="ReturnUrl" value="@ReturnUrl" />
         <button type="submit" class="w-100 btn btn-lg btn-primary">@Localizer["Log out"]</button>
       </form>
     </div>
 }
 else
 {
-            <h3 class="text-center">@Localizer["Loged from account."]</h3>
+        <h3 class="text-center">@Localizer["Loged from account."]</h3>
+        <a href="@ReturnUrl">@Localizer["Return to page."]</a>
         <hr />
 }
 </div>
@@ -31,6 +32,9 @@ else
     bool isAutenficated = false;
     [CascadingParameter]
     public HttpContext? HttpContext { get; set; }
+    
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
 
     protected override void OnInitialized()
     {
@@ -43,6 +47,7 @@ else
 
         await signInManager.SignOutAsync();
         NavigationManager.NavigateTo($"Account/Logout", forceLoad: true);
+        //NavigationManager.NavigateTo(ReturnUrl ?? "/", forceLoad: true);
     }
 
 }

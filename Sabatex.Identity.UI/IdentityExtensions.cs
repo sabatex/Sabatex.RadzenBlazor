@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,6 +54,26 @@ public static class IdentityExtensions
             {
                 options.ClientId = clientId;
                 options.ClientSecret = clientSecret;
+                options.Events = new Microsoft.AspNetCore.Authentication.OAuth.OAuthEvents 
+                { 
+                    OnCreatingTicket = async context => 
+                    { 
+                        var email = context.Identity.FindFirst(ClaimTypes.Email)?.Value;
+                        if (string.IsNullOrEmpty(email)) 
+                        { 
+                            throw new ArgumentException("Email claim is missing.");
+                        }
+                        var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<IdentityUser>>();
+                        var user = await userManager.FindByEmailAsync(email);
+                        if (user != null) 
+                        {
+                            var loginProvider = context.Options.ClaimsIssuer ?? throw new ArgumentNullException(nameof(context.Options.ClaimsIssuer));
+                            var providerKey = context.Identity.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new ArgumentNullException(nameof(ClaimTypes.NameIdentifier));
+                            var loginInfo = new UserLoginInfo(loginProvider, providerKey, loginProvider);
+                            await userManager.AddLoginAsync(user, loginInfo);
+                        } 
+                    } 
+                };
             });
         }
         return builder;

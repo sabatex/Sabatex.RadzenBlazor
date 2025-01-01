@@ -5,5 +5,8 @@
     <EmbeddedResource Update="Resources\Components\Account\Pages\AccessDenied.uk.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Components\Account\Pages\Login.uk.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
