@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.Extensions.Localization
 
-@inject SignInManager<IdentityUser> SignInManager
+@inject SignInManager<ApplicationUser> SignInManager
 @inject IdentityRedirectManager RedirectManager
 @inject IStringLocalizer<ExternalLoginPicker> Localizer
 @if (externalLogins.Length != 0)

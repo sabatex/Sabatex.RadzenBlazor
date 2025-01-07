@@ -4,9 +4,9 @@
 @using Microsoft.AspNetCore.Identity
 
 
-@inject UserManager<IdentityUser> UserManager
-@inject SignInManager<IdentityUser> SignInManager
-@inject Sabatex.Identity.UI.IdentityUserAccessor UserAccessor
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject Sabatex.Identity.UI.ApplicationUserAccessor UserAccessor
 @inject Sabatex.Identity.UI.IdentityRedirectManager RedirectManager
 
 <PageTitle>Profile</PageTitle>
@@ -34,7 +34,7 @@
 </div>
 
 @code {
-    private IdentityUser user = default!;
+    private ApplicationUser user = default!;
     private string? username;
     private string? phoneNumber;
 

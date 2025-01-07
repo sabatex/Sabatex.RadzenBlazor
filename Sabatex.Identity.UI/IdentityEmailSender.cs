@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 namespace Sabatex.Identity.UI;
 
 // Remove the "else if (EmailSender is IdentityNoOpEmailSender)" block from RegisterConfirmation.razor after updating with a real implementation.
-public sealed class IdentityEmailSender : IEmailSender<IdentityUser>
+public sealed class IdentityEmailSender : IEmailSender<ApplicationUser>
 {
     private readonly IConfiguration Configuration;
 
@@ -43,12 +43,12 @@ public sealed class IdentityEmailSender : IEmailSender<IdentityUser>
 
 
     }
-    public Task SendConfirmationLinkAsync(IdentityUser user, string email, string confirmationLink) =>
+    public Task SendConfirmationLinkAsync(ApplicationUser user, string email, string confirmationLink) =>
         SendEmailAsync(email, "Confirm your email", $"Please confirm your account by <a href='{confirmationLink}'>clicking here</a>.");
 
-    public Task SendPasswordResetLinkAsync(IdentityUser user, string email, string resetLink) =>
+    public Task SendPasswordResetLinkAsync(ApplicationUser user, string email, string resetLink) =>
         SendEmailAsync(email, "Reset your password", $"Please reset your password by <a href='{resetLink}'>clicking here</a>.");
 
-    public Task SendPasswordResetCodeAsync(IdentityUser user, string email, string resetCode) =>
+    public Task SendPasswordResetCodeAsync(ApplicationUser user, string email, string resetCode) =>
         SendEmailAsync(email, "Reset your password", $"Please reset your password using the following code: {resetCode}");
 }

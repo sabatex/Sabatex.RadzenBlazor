@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Sabatex.Identity.UI;
 
-public sealed class IdentityUserAccessor(UserManager<IdentityUser> userManager, IdentityRedirectManager redirectManager)
+public sealed class ApplicationUserAccessor(UserManager<ApplicationUser> userManager, IdentityRedirectManager redirectManager)
 {
-    public async Task<IdentityUser> GetRequiredUserAsync(HttpContext context)
+    public async Task<ApplicationUser> GetRequiredUserAsync(HttpContext context)
     {
         var user = await userManager.GetUserAsync(context.User);
 
