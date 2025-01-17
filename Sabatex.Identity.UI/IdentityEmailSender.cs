@@ -5,6 +5,7 @@ using System.Net;
 using System.Security.Authentication;
 using System.Net.Mail;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 
 namespace Sabatex.Identity.UI;
@@ -13,14 +14,23 @@ namespace Sabatex.Identity.UI;
 public sealed class IdentityEmailSender : IEmailSender<ApplicationUser>
 {
     private readonly IConfiguration Configuration;
+    private readonly ILogger<IdentityEmailSender> _logger;
 
-    public IdentityEmailSender(IConfiguration configuration)
+    public IdentityEmailSender(IConfiguration configuration,ILogger<IdentityEmailSender> logger)
     {
         Configuration = configuration;
+        _logger = logger;
     }
     async Task SendEmailAsync(string email, string subject, string message)
     {
         var MailServer = Configuration.GetSection("MailServer");
+        if (!MailServer.Exists())
+        {
+            _logger.LogError("MailServer not configured");
+            return;
+        }
+
+
         var pass = MailServer.GetValue<string>("Pass");
         var login = MailServer.GetValue<string>("Login");
         var port = MailServer.GetValue<int>("Port");

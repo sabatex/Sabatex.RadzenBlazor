@@ -28,33 +28,3 @@ public interface ICommandLineOperations
 
 } 
 
-
-
-public abstract class CommandLineOperations<DbContext>:ICommandLineOperations  where DbContext : IdentityDbContext
-{
-    readonly RoleManager<IdentityRole> roleManager;
-    readonly UserManager<ApplicationUser> userManager;
-    readonly DbContext dbContext;
-
-    public CommandLineOperations(IServiceProvider serviceProvider)
-    {
-        roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-        dbContext = serviceProvider.GetRequiredService<DbContext>();
-    }
-    public virtual async Task MigrateAsync()
-    {
-        await dbContext.Database.MigrateAsync();
-    }
-
-    public abstract Task InitialRolesAsync();
-    
-
-    public async Task GrandUserAdminRoleAsync(string userName)
-    {
-        await userManager.GrandUserAdminRoleAsync(userName);
-    }
-
-    public abstract Task InitialDemoDataAsync();
- 
-}

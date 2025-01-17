@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -77,6 +78,18 @@ public static class IdentityExtensions
         if (File.Exists(confogFileName))
             manager.AddJsonFile(confogFileName,optional:true,reloadOnChange:false);
         return manager;
+    }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="manager"></param>
+    /// <param name="userFileConfig"></param>
+    /// <returns></returns>
+    public static ConfigurationManager AddUserConfiguration(this ConfigurationManager manager)
+    {
+        Assembly assembly = Assembly.GetExecutingAssembly(); // Retrieve the project name 
+        string projectName = assembly.GetName().Name;
+        return manager.AddUserConfiguration(projectName);
     }
 
     /// <summary>
@@ -168,17 +181,21 @@ public static class IdentityExtensions
         }
     }
 
-    
-    
-    public static IServiceCollection RegisterIdentityServices<TDBContext,TCmd>(this IServiceCollection services)
-        where TDBContext : IdentityDbContext
-        where TCmd : CommandLineOperations<TDBContext>
+
+    /// <summary>
+    /// add sabatex identity UI services
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddSabatexIdentityUI(this IServiceCollection services)
+    //    where TDBContext : IdentityDbContext
+    //    where TCmd : CommandLineOperations<TDBContext>
     {
-        services.AddDbContext<TDBContext>();
-        services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<TDBContext>()
-            .AddDefaultTokenProviders();
-        services.AddScoped<ICommandLineOperations,TCmd>();
+    //    services.AddDbContext<TDBContext>();
+    //    services.AddIdentity<ApplicationUser, IdentityRole>()
+    //        .AddEntityFrameworkStores<TDBContext>()
+    //        .AddDefaultTokenProviders();
+    //    services.AddScoped<ICommandLineOperations,TCmd>();
         return services;
     }
 
@@ -196,7 +213,7 @@ public static class IdentityExtensions
         var cmd = app.Services.CreateScope().ServiceProvider.GetRequiredService<ICommandLineOperations>();
         foreach (var arg in args)
         {
-            if (arg == "-migrate")
+            if (arg == "--migrate")
             {
                 await cmd.MigrateAsync();
                 return;
