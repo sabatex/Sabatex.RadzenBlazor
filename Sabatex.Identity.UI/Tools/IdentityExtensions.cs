@@ -21,7 +21,9 @@ namespace Sabatex.Identity.UI;
 /// </summary>
 public static class IdentityExtensions
 {
-    const string AdministratorRole = "Administrator";
+    public const string AdministratorRole = "Administrator";
+    public const string LoginCallbackAction = "LoginCallback";
+    public const string LinkLoginCallbackAction = "LinkLoginCallback";
 
 
     /// <summary>

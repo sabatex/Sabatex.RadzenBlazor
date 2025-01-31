@@ -64,7 +64,7 @@
 }
 
 @code {
-    public const string LinkLoginCallbackAction = "LinkLoginCallback";
+
 
     private ApplicationUser user = default!;
     private IList<UserLoginInfo>? currentLogins;
@@ -99,7 +99,7 @@
 
         showRemoveButton = passwordHash is not null || currentLogins.Count > 1;
 
-        if (HttpMethods.IsGet(HttpContext.Request.Method) && Action == LinkLoginCallbackAction)
+        if (HttpMethods.IsGet(HttpContext.Request.Method) && Action == IdentityExtensions.LinkLoginCallbackAction)
         {
             await OnGetLinkLoginCallbackAsync();
         }

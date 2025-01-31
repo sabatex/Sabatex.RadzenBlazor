@@ -53,7 +53,6 @@
 </div>
 
 @code {
-    public const string LoginCallbackAction = "LoginCallback";
 
     private string? message;
     private ExternalLoginInfo externalLoginInfo = default!;
@@ -92,7 +91,7 @@
 
         if (HttpMethods.IsGet(HttpContext.Request.Method))
         {
-            if (Action == LoginCallbackAction)
+            if (Action == IdentityExtensions.LoginCallbackAction)
             {
                 await OnLoginCallbackAsync();
                 return;
