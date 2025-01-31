@@ -22,7 +22,7 @@ public class PersistentAuthenticationStateProvider : AuthenticationStateProvider
 
     IEnumerable<Claim> GetClaims(UserInfo userInfo)
     {
-          yield return new Claim(ClaimTypes.NameIdentifier, userInfo.UserId);
+          yield return new Claim(ClaimTypes.NameIdentifier, userInfo.Id.ToString());
             yield return new Claim(ClaimTypes.Name, userInfo.Email);
             yield return new Claim(ClaimTypes.Email, userInfo.Email);
             foreach (var role in userInfo.Roles)

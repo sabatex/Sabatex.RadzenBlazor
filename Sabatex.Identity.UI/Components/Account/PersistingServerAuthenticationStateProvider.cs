@@ -55,8 +55,9 @@ public sealed class PersistingServerAuthenticationStateProvider : ServerAuthenti
             {
                 state.PersistAsJson("UserInfo", new 
                 {
-                    UserId = userId,
+                    Id = userId,
                     Email = email,
+                    Name = "",
                     Roles = roles 
                 });
             }

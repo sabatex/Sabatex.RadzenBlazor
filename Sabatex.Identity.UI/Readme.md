@@ -4,11 +4,24 @@ This is a BackEnd library for Blazor .
 
 ## Getting Started
 	
-	### Install the package
-```bash
-dotnet add package sabatex.Identity.UI
+### Run PowerShell as admin and navigate to root solution folder
+```powershell
+cd {root project folder}
+git submodule add https://github.com/sabatex/Sabatex.RadzenBlazor
+cd {backend project folder Components}
+New-Item -ItemType SymbolicLink -Path "Account" -Target "..\..\Sabatex.RadzenBlazor\Sabatex.Identity.UI\Components\Account\"
+cd {backend project folder Resources/Components}
+New-Item -ItemType SymbolicLink -Path "Account" -Target "..\..\..\Sabatex.RadzenBlazor\Sabatex.Identity.UI\Resources\Components\Account\"
 ```
-	### Implement interface ICommandLineOperation
+### Add lines to Components/_Imports.razor_
+```csharp
+@using Sabatex.Identity.UI
+@using {Assembly name}.Components.Account.Shared
+```
+
+
+
+### Implement interface ICommandLineOperation
 ```csharp
 public class CommandLineOperations: ICommandLineOperations
 {

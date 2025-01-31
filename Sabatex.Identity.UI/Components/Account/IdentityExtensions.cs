@@ -221,14 +221,14 @@ public static class IdentityExtensions
                 return;
             }
 
-            if (arg.StartsWith("-admin"))
+            if (arg.StartsWith("--admin"))
             {
-                var user = arg.Replace("-admin", string.Empty);
+                var user = arg.Replace("--admin", string.Empty);
                 await cmd.GrandUserAdminRoleAsync(user);
                 return;
             }
 
-            if (arg == "-initialDemo")
+            if (arg == "--initialDemo")
             {
                 await cmd.InitialDemoDataAsync();
                 return;
