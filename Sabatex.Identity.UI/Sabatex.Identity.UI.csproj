@@ -24,43 +24,19 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="9.0.0" />
-	<PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="9.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
+	<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.*" />
+	<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="9.0.*" />
+	<PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="9.0.*" />
+	<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.*" />
+    <!--<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
-	<PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.0" />
+	<PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.0" />-->
   </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Resources\Components\Account\Pages\AccessDenied.uk.resx" CopyToOutputDirectory="PreserveNewest">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>AccessDenied.uk.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Components\Account\Pages\ConfirmEmail.uk.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ConfirmEmail.uk.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Components\Account\Shared\ExternalLoginPicker.uk.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ExternalLoginPicker.uk.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
+   <ItemGroup>
 	  <None Include="../Readme.md" Pack="true" PackagePath="\" />
    </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="Components\Account\Pages\Logout.razor">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Tools\" />
-  </ItemGroup>
-
+ 
 </Project>
