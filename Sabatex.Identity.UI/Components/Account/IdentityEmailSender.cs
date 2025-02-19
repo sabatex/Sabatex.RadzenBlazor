@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 
 using System.Net;
 using System.Security.Authentication;
-using System.Net.Mail;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using MimeKit;
+using MailKit.Net.Smtp;
 
 
 namespace Sabatex.Identity.UI;
@@ -36,19 +37,29 @@ public sealed class IdentityEmailSender : IEmailSender<ApplicationUser>
         var port = MailServer.GetValue<int>("Port");
         var host = MailServer.GetValue<string>("SMTPHost");
 
-        var smtpClient = new SmtpClient()
+
+        var mailMessage = new MimeMessage();
+        mailMessage.From.Add(new MailboxAddress("Identity site", login));
+        mailMessage.To.Add(new MailboxAddress("",email));
+        mailMessage.Subject = subject;
+        mailMessage.Body = new TextPart("plain") { Text = message };
+
+
+
+        using (var smtpClient = new SmtpClient())
         {
-            Host = host, // set your SMTP server name here
-            Port = port, // Port 
-            EnableSsl = true,
-            Credentials = new NetworkCredential(login, pass)
+            await smtpClient.ConnectAsync(host, port,true);
+            _logger.LogTrace($"Connect for send email  to {host}:{port}");
+            await smtpClient.AuthenticateAsync(login, pass);
+            await smtpClient.SendAsync(mailMessage);
+            await smtpClient.DisconnectAsync(true);
         };
 
-        using (var mail = new MailMessage(login, email, subject, message))
-        {
-            mail.IsBodyHtml = true;
-            await smtpClient.SendMailAsync(mail);
-        }
+        //using (var mail = new MailMessage(login, email, subject, message))
+        //{
+        //    mail.IsBodyHtml = true;
+        //    await smtpClient.SendMailAsync(mail);
+        //}
 
 
 

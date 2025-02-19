@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Sabatex.Core;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -21,7 +22,6 @@ namespace Sabatex.Identity.UI;
 /// </summary>
 public static class IdentityExtensions
 {
-    public const string AdministratorRole = "Administrator";
     public const string LoginCallbackAction = "LoginCallback";
     public const string LinkLoginCallbackAction = "LinkLoginCallback";
 
@@ -168,10 +168,10 @@ public static class IdentityExtensions
             throw new Exception("Failed to find user");
         }
  
-        var usersInRole = await userManager.GetUsersInRoleAsync(AdministratorRole);
+        var usersInRole = await userManager.GetUsersInRoleAsync(IUserAdminRole.Administrator);
         if (usersInRole.Count() == 0)
         {
-            var resultAddRole = await userManager.AddToRoleAsync(user, AdministratorRole);
+            var resultAddRole = await userManager.AddToRoleAsync(user, IUserAdminRole.Administrator);
             if (!resultAddRole.Succeeded)
             {
                 throw new Exception("Failed to add role Administrator to user");

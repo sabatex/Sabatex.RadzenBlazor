@@ -1,0 +1,25 @@
+﻿@implements IDisposable
+@rendermode RenderMode.InteractiveWebAssembly
+@inject SabatexBlazorAppState AppState
+
+<RadzenLabel Text="@pageHeader" Style="margin-bottom:auto;margin-top:auto" />
+
+@code {
+    private string? pageHeader;
+ 
+    void PageHeaderChange(string pageHeader)
+    {
+        this.pageHeader = pageHeader;
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        AppState.OnHeaderChange += PageHeaderChange;
+    }
+
+    public void Dispose()
+    {
+        AppState.OnHeaderChange -= PageHeaderChange;
+    }
+}

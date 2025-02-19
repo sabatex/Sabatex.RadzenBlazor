@@ -4,7 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-	<Version>9.0.0-alpha1</Version>
+	<Version>9.0.0-rc1</Version>
 	<Copyright>Serhiy Lakas</Copyright>
 	<Authors>Serhiy Lakas</Authors>
 	<Title>Blazor Account localized UK (Ukraine)</Title>
@@ -24,15 +24,24 @@
   </ItemGroup>
 
   <ItemGroup>
+	<PackageReference Include="MailKit" Version="4.10.0" />
 	<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.*" />
 	<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="9.0.*" />
 	<PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="9.0.*" />
 	<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.*" />
+	<PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.*" />
     <!--<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
 	<PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.0" />-->
   </ItemGroup>
+	<ItemGroup Condition="$(Version.Contains('-'))">
+		<PackageReference Include="Sabatex.Core" Version="*-*" />
+	</ItemGroup>
+
+	<ItemGroup Condition="!$(Version.Contains('-'))">
+		<PackageReference Include="Sabatex.Core" Version="*" />
+	</ItemGroup>
 
    <ItemGroup>
 	  <None Include="../Readme.md" Pack="true" PackagePath="\" />
