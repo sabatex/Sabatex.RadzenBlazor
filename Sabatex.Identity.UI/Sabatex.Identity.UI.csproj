@@ -4,7 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-	<Version>9.0.0</Version>
+	<Version>9.0.3</Version>
 	<Copyright>Serhiy Lakas</Copyright>
 	<Authors>Serhiy Lakas</Authors>
 	<Title>Blazor Account localized UK (Ukraine)</Title>
@@ -29,20 +29,17 @@
 	<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="9.0.*" />
 	<PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="9.0.*" />
 	<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.*" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="9.6.0.2" />
 	<PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.*" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.*" />
-    <!--<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
-	<PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.0" />-->
   </ItemGroup>
 	<ItemGroup Condition="$(Version.Contains('-'))">
-		<PackageReference Include="Sabatex.Core" Version="*-*" />
+		<!--<PackageReference Include="Sabatex.Core" Version="*-*" />-->
 		<PackageReference Include="Sabatex.RadzenBlazor" Version="*-*" />
 	</ItemGroup>
 
 	<ItemGroup Condition="!$(Version.Contains('-'))">
-		<PackageReference Include="Sabatex.Core" Version="*" />
+		<!--<PackageReference Include="Sabatex.Core" Version="*" />-->
 		<PackageReference Include="Sabatex.RadzenBlazor" Version="*" />
 	</ItemGroup>
 

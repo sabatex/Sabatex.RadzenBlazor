@@ -62,8 +62,9 @@ public abstract class BaseController<TItem> : ControllerBase where TItem : class
 
         if (queryParams.ForeginKey != null)
         {
-            query = query.Where($"{queryParams.ForeginKey.Name}==\"{queryParams.ForeginKey.Id}\"");
+            query = query.Where($"it => it.{queryParams.ForeginKey.Name}.ToString() == \"{queryParams.ForeginKey.Id}\"");
         }
+
         if (!String.IsNullOrEmpty(queryParams.Args.Filter))
             query = query.Where(queryParams.Args.Filter); 
 
